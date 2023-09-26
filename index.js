@@ -1,4 +1,4 @@
-const { Telegraf, Markup } = require('telegraf');
+const { Telegraf } = require('telegraf');
 require('dotenv').config();
 const commandCourses = require('./commands/courses');
 const commandLocation = require('./commands/location');
@@ -22,17 +22,17 @@ Siempre puedes preguntarnos sobre nuestros cursos, fechas de inicio, ubicaciones
 `;
 
 bot.start(async (ctx) => {
-    // Creo los botones de ver cursos y ver ubicacion
-    const buttons = [
-        [Markup.button.callback('Ver cursos', 'ver_cursos')],
-        [Markup.button.callback('Ver ubicación', 'ver_ubicacion')],
-    ];
-    const keyboard = Markup.inlineKeyboard(buttons, { columns: 2 });
-
-    // Envio el mensaje de bienvenida con los botones
+    // Envio el mensaje de bienvenida
     await ctx.replyWithPhoto({ source: photoPath }, {
         caption: welcome,
-        reply_markup: keyboard,
+    });
+    await ctx.reply('Elige una opción para comenzar!', {
+        reply_markup: {
+            inline_keyboard: [
+                [{ text: 'Ver ubicación 📌', callback_data: 'ubicacion' }, { text: 'Ver cursos disponibles ✅', callback_data: 'cursos' }],
+                [{ text: 'Preguntas Frecuentes 🙋🏻‍♀️', callback_data: 'faq' }],
+            ],
+        },
     });
 });
 

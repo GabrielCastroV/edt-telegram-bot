@@ -30,7 +30,7 @@ bot.action('volver_cursos', async (ctx) => {
         reply_markup: {
             inline_keyboard: [
                 [{ text: 'EDT Plus 👧', callback_data: 'plus' }, { text: 'EDT Presencial', callback_data: 'presencial' }],
-                [{ text: 'EDT Online', callback_data: 'online' }],
+                [{ text: '< Volver', callback_data: 'volver_inicio' }, { text: 'EDT Online', callback_data: 'online' }],
             ],
         },
     });
