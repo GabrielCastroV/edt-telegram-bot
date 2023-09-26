@@ -13,12 +13,12 @@ bot.command('ubicacion', async (ctx) => {
 #EnfocadosenTuFuturo #Edtecnica
     `;
     try {
-        ctx.replyWithLocation(latitude, longitude, {
+        await ctx.replyWithLocation(latitude, longitude, {
             live_period: 0,
             title: locationName,
             address: locationDescription,
         });
-        ctx.reply(locationDescription);
+        await ctx.reply(locationDescription);
     } catch (error) {
         console.log(error);
     }
