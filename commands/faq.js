@@ -29,7 +29,7 @@ const faq = `
 `;
 bot.command('preguntas', async (ctx) => {
     try {
-        ctx.reply(faq);
+        await ctx.reply(faq);
     } catch (error) {
         console.log(error);
     }
@@ -37,7 +37,7 @@ bot.command('preguntas', async (ctx) => {
 
 bot.action('faq', async (ctx) => {
     try {
-        ctx.deleteMessage();
+        await ctx.deleteMessage();
         await ctx.telegram.sendMessage(ctx.chat.id, faq,
             {
                 reply_markup: {

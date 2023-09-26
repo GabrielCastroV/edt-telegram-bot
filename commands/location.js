@@ -3,15 +3,20 @@ require('dotenv').config();
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
-bot.command('ubicacion', async (ctx) => {
-    const latitude = 10.4976891;
-    const longitude = -66.8432809;
+const latitude = 10.4976891;
+const longitude = -66.8432809;
+const locationName = 'EDTécnica';
+const locationDescription = `
+Nuestro Campus EDT está ubicado en Los Palos Grandes, Torre Parque Cristal piso 12 oficina 12-4
 
-    const locationName = 'EDTécnica';
-    const locationDescription = `
-    Estamos ubicados aquí Los palos grandes piso 12 blablabla, esperamos verte pronto. Ven a conocernos y descubre todo lo que tenemos para ofrecer en nuestra sede. Contamos con el equipo necesario para tu formación y conexión de internet con alta velocidad. 🚀
-#EnfocadosenTuFuturo #Edtecnica
-    `;
+Ven a conocernos y descubre todo lo que tenemos para ofrecer en nuestra sede. Contamos con el equipo necesario para tu formación y conexión de internet con alta velocidad. 🚀
+
+Acércate y conversemos.
+
+#EnfocadoseEnTuFuturo #Edtecnica
+`;
+
+bot.command('ubicacion', async (ctx) => {
     try {
         await ctx.replyWithLocation(latitude, longitude, {
             live_period: 0,
