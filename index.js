@@ -18,7 +18,7 @@ Siempre puedes preguntarnos sobre nuestros cursos, fechas de inicio, ubicaciones
 
 ¡Disfruta explorando y aprendiendo con nosotros!
 
-#EnfocadosenTuFuturo
+#EnfocadoseEnTuFuturo
 `;
 
 bot.start(async (ctx) => {

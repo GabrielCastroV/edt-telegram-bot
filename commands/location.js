@@ -5,7 +5,7 @@ const bot = new Telegraf(process.env.BOT_TOKEN);
 
 const latitude = 10.4976891;
 const longitude = -66.8432809;
-const locationName = 'EDTécnica';
+const locationName = 'EDTecnica';
 const locationDescription = `
 Nuestro Campus EDT está ubicado en Los Palos Grandes, Torre Parque Cristal piso 12 oficina 12-4
 
@@ -13,7 +13,7 @@ Ven a conocernos y descubre todo lo que tenemos para ofrecer en nuestra sede. Co
 
 Acércate y conversemos.
 
-#EnfocadoseEnTuFuturo #Edtecnica
+#EnfocadoseEnTuFuturo #EDTecnica
 `;
 
 bot.command('ubicacion', async (ctx) => {
