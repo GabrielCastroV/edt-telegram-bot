@@ -29,7 +29,7 @@ bot.start(async (ctx) => {
     await ctx.reply('Elige una opción para comenzar!', {
         reply_markup: {
             inline_keyboard: [
-                [{ text: 'Ver ubicación 📌', url: 'https://www.google.com/maps/place/EDT%C3%A9cnica+-+Cursos+y+Carreras/@10.4976891,-66.8432809,15z/data=!4m6!3m5!1s0x8c2a597949dc9579:0x7c11b2c3c93dde12!8m2!3d10.4976891!4d-66.8432809!16s%2Fg%2F11h6dz50d_?entry=ttu' }, { text: 'Ver cursos disponibles ✅', callback_data: 'cursos' }],
+                [{ text: 'Ubicación 📌', url: 'https://www.google.com/maps/place/EDT%C3%A9cnica+-+Cursos+y+Carreras/@10.4976891,-66.8432809,15z/data=!4m6!3m5!1s0x8c2a597949dc9579:0x7c11b2c3c93dde12!8m2!3d10.4976891!4d-66.8432809!16s%2Fg%2F11h6dz50d_?entry=ttu' }, { text: 'Cursos disponibles ✅', callback_data: 'cursos' }],
                 [{ text: 'Preguntas Frecuentes 🙋🏻‍♀️', callback_data: 'faq' }],
             ],
         },

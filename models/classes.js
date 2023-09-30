@@ -1,4 +1,4 @@
-const schemaClass = new {
+const newStudent = {
     weekDay: String,
     schedule: String('ex. from 9am to 12pm'),
     dayStart: Date,
@@ -7,4 +7,4 @@ const schemaClass = new {
     availability: Boolean,
 };
 
-schemaClass;
+newStudent;

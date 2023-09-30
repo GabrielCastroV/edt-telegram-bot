@@ -1,4 +1,4 @@
-const user = new {
+const newUser = {
     name: String,
     surname: String,
     phoneNumber: String,
@@ -6,4 +6,4 @@ const user = new {
     module: Number,
 };
 
-user;
+newUser;
