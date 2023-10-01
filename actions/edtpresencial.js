@@ -35,6 +35,82 @@ bot.action('volver_cursos', async (ctx) => {
         },
     });
 });
+
+// Función de presencial
+
+const menuPresencial = async (ctx, info, plan, funciona, costo, horarios, volver, inscribir) => {
+    try {
+        await ctx.deleteMessage();
+    } catch (error) {
+        console.log(error);
+    }
+    await ctx.reply(info,
+        {
+            reply_markup: {
+                inline_keyboard: [
+                    [{ text: 'Plan de Estudios', callback_data: plan }, { text: '¿Cómo funciona?', callback_data: funciona }],
+                    [{ text: '¿Costo por matricula?', callback_data: costo }, { text: 'Horarios', callback_data: horarios }],
+                    [{ text: '< Volver', callback_data: volver }, { text: 'Inscribirme ✅', callback_data: inscribir }],
+                ],
+            },
+        });
+};
+
+// Plan de estudios (funcion)
+
+const planEstudios = async (ctx, info, volver) => {
+    try {
+        await ctx.deleteMessage();
+    } catch (error) {
+        console.log(error);
+    }
+    await ctx.reply(info,
+        {
+            reply_markup: {
+                inline_keyboard: [
+                    [{ text: '< Volver', callback_data: volver }],
+                ],
+            },
+        });
+};
+
+// Como funciona (funcion)
+
+const comoFunciona = async (ctx, info, volver) => {
+    try {
+        await ctx.deleteMessage();
+    } catch (error) {
+        console.log(error);
+    }
+    await ctx.reply(info,
+        {
+            reply_markup: {
+                inline_keyboard: [
+                    [{ text: '< Volver', callback_data: volver }],
+                ],
+            },
+        });
+};
+// Costo por matricula (funcion)
+
+const costoMatricula = async (ctx, info, volver) => {
+    try {
+        await ctx.deleteMessage();
+    } catch (error) {
+        console.log(error);
+    }
+    await ctx.reply(info,
+        {
+            reply_markup: {
+                inline_keyboard: [
+                    [{ text: '< Volver', callback_data: volver }],
+                ],
+            },
+        });
+};
+
+// Schedules and Info. (funcion)
+
 const infoSchedules = `
 Horarios disponibles:
 
@@ -44,15 +120,25 @@ Horarios disponibles:
 
 3. Sabados, 9am-12pm, inicia el 25/11/23
 `;
-
-// Programación
-
-bot.action('programacion', async (ctx) => {
+const schedules = async (ctx, volver) => {
     try {
         await ctx.deleteMessage();
     } catch (error) {
         console.log(error);
     }
+    await ctx.reply(infoSchedules,
+        {
+            reply_markup: {
+                inline_keyboard: [
+                    [{ text: '< Volver', callback_data: volver }],
+                ],
+            },
+        });
+};
+
+// Programación
+
+bot.action('programacion', async (ctx) => {
     const info = `
     Programación Full Stack
 
@@ -66,23 +152,9 @@ Nuestro objetivo es desarrollar y ayudar a profesionales que puedan trabajar en 
     
 (⏳ Duración: 6 Meses)
 `;
-    await ctx.reply(info,
-        {
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: 'Plan de Estudios', callback_data: 'plan_de_estudios_pr' }, { text: '¿Cómo funciona?', callback_data: 'como_funciona_pr' }],
-                    [{ text: '¿Costo por matricula?', callback_data: 'costo_matricula_pr' }, { text: 'Horarios', callback_data: 'horarios' }],
-                    [{ text: '< Volver', callback_data: 'volver_edt_presencial' }, { text: 'Inscribirme ✅', callback_data: 'elige_horario_pr' }],
-                ],
-            },
-        });
+    menuPresencial(ctx, info, 'plan_de_estudios_pr', 'como_funciona_pr', 'costo_matricula_pr', 'horarios_pr', 'volver_edt_presencial', 'elige_horario_pr');
 });
 bot.action('plan_de_estudios_pr', async (ctx) => {
-    try {
-        await ctx.deleteMessage();
-    } catch (error) {
-        console.log(error);
-    }
     const info = `
     Plan de Estudios:
 
@@ -97,41 +169,17 @@ bot.action('plan_de_estudios_pr', async (ctx) => {
 
     Durante todo el BootCamp desarrollarás al menos 10 proyectos reales.  
     `;
-    await ctx.reply(info,
-        {
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: '< Volver', callback_data: 'volver_edt_presencial_pr' }],
-                ],
-            },
-        });
+    planEstudios(ctx, info, 'volver_edt_presencial_pr');
 });
 bot.action('como_funciona_pr', async (ctx) => {
-    try {
-        await ctx.deleteMessage();
-    } catch (error) {
-        console.log(error);
-    }
     const info = `
     ¿Cómo funciona?
 
     B-LEARNING - Al menos una o dos clases presenciales en el Campus donde tienes acceso a internet de alta velocidad y computadoras, además tienes acceso al Campus Virtual con clases y sesiones en video.
     `;
-    await ctx.reply(info,
-        {
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: '< Volver', callback_data: 'volver_edt_presencial_pr' }],
-                ],
-            },
-        });
+    comoFunciona(ctx, info, 'volver_edt_presencial_pr');
 });
 bot.action('costo_matricula_pr', async (ctx) => {
-    try {
-        await ctx.deleteMessage();
-    } catch (error) {
-        console.log(error);
-    }
     const info = `
     ¿Costo por matricula?
 
@@ -139,36 +187,12 @@ bot.action('costo_matricula_pr', async (ctx) => {
 
     Pago 1 - 130 $ y luego 5 cuotas de 100 $ c/u 
     `;
-    await ctx.reply(info,
-        {
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: '< Volver', callback_data: 'volver_edt_presencial_pr' }],
-                ],
-            },
-        });
+    costoMatricula(ctx, info, 'volver_edt_presencial_pr');
 });
-bot.action('plan_de_estudios_pr', async (ctx) => {
-    try {
-        await ctx.deleteMessage();
-    } catch (error) {
-        console.log(error);
-    }
-    await ctx.reply(infoSchedules,
-        {
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: '< Volver', callback_data: 'volver_edt_presencial_pr' }],
-                ],
-            },
-        });
+bot.action('horarios_pr', async (ctx) => {
+    schedules(ctx, 'volver_edt_presencial_pr');
 });
 bot.action('volver_edt_presencial_pr', async (ctx) => {
-    try {
-        await ctx.deleteMessage();
-    } catch (error) {
-        console.log(error);
-    }
     const info = `
     Programación Full Stack
 
@@ -182,26 +206,12 @@ Nuestro objetivo es desarrollar y ayudar a profesionales que puedan trabajar en 
 
 (⏳ Duración: 6 Meses)
     `;
-    await ctx.reply(info,
-        {
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: 'Plan de Estudios 📋', callback_data: 'plan_de_estudios_pr' }, { text: '¿Cómo funciona?', callback_data: 'como_funciona_pr' }],
-                    [{ text: '¿Costo por matricula?', callback_data: 'costo_matricula_pr' }, { text: 'Estoy listo!', callback_data: 'asd' }],
-                    [{ text: '< Volver', callback_data: 'volver_edt_presencial' }],
-                ],
-            },
-        });
+    menuPresencial(ctx, info, 'plan_de_estudios_pr', 'como_funciona_pr', 'costo_matricula_pr', 'horarios_pr', 'volver_edt_presencial', 'elige_horario_pr');
 });
 
 // Diseño digital
 
 bot.action('diseno_digital', async (ctx) => {
-    try {
-        await ctx.deleteMessage();
-    } catch (error) {
-        console.log(error);
-    }
     const info = `
     Diseño Digital
 
@@ -217,23 +227,9 @@ Esta carrera técnica tiene aval universitario y además tenemos un programa de 
 
 (⏳ Duración: 6 Meses)
     `;
-    await ctx.reply(info,
-        {
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: 'Plan de Estudios 📋', callback_data: 'plan_de_estudios_dd' }, { text: '¿Cómo funciona?', callback_data: 'como_funciona_dd' }],
-                    [{ text: '¿Costo por matricula?', callback_data: 'costo_matricula_dd' }, { text: 'Estoy listo!', callback_data: 'asd' }],
-                    [{ text: '< Volver', callback_data: 'volver_edt_presencial' }],
-                ],
-            },
-        });
+    menuPresencial(ctx, info, 'plan_de_estudios_dd', 'como_funciona_dd', 'costo_matricula_dd', 'horarios_dd', 'volver_edt_presencial', 'elige_horario_dd');
 });
 bot.action('plan_de_estudios_dd', async (ctx) => {
-    try {
-        await ctx.deleteMessage();
-    } catch (error) {
-        console.log(error);
-    }
     const info = `
     Plan de Estudios:
 
@@ -248,41 +244,18 @@ bot.action('plan_de_estudios_dd', async (ctx) => {
     ✔ Edición en Móvil
     ✔ Proyecto Final
     `;
-    await ctx.reply(info,
-        {
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: '< Volver', callback_data: 'volver_edt_presencial_dd' }],
-                ],
-            },
-        });
+    planEstudios(ctx, info, 'volver_edt_presencial_dd');
+
 });
 bot.action('como_funciona_dd', async (ctx) => {
-    try {
-        await ctx.deleteMessage();
-    } catch (error) {
-        console.log(error);
-    }
     const info = `
     ¿Cómo funciona?
 
     B-LEARNING - Al menos una o dos clases presenciales en el Campus donde tienes acceso a internet de alta velocidad y computadoras, además tienes acceso al Campus Virtual con clases y sesiones en video.
     `;
-    await ctx.reply(info,
-        {
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: '< Volver', callback_data: 'volver_edt_presencial_dd' }],
-                ],
-            },
-        });
+    comoFunciona(ctx, info, 'volver_edt_presencial_dd');
 });
 bot.action('costo_matricula_dd', async (ctx) => {
-    try {
-        await ctx.deleteMessage();
-    } catch (error) {
-        console.log(error);
-    }
     const info = `
     ¿Costo por matricula?
 
@@ -290,21 +263,12 @@ bot.action('costo_matricula_dd', async (ctx) => {
 
     Pago 1 - 130 $ y luego 5 cuotas de 80 $ c/u
     `;
-    await ctx.reply(info,
-        {
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: '< Volver', callback_data: 'volver_edt_presencial_dd' }],
-                ],
-            },
-        });
+    costoMatricula(ctx, info, 'volver_edt_presencial_dd');
+});
+bot.action('horarios_dd', async (ctx) => {
+    schedules(ctx, 'volver_edt_presencial_dd');
 });
 bot.action('volver_edt_presencial_dd', async (ctx) => {
-    try {
-        await ctx.deleteMessage();
-    } catch (error) {
-        console.log(error);
-    }
     const info = `
     Diseño Digital
 
@@ -320,26 +284,12 @@ Esta carrera técnica tiene aval universitario y además tenemos un programa de 
 
 (⏳ Duración: 6 Meses)
     `;
-    await ctx.reply(info,
-        {
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: 'Plan de Estudios 📋', callback_data: 'plan_de_estudios_dd' }, { text: '¿Cómo funciona?', callback_data: 'como_funciona_dd' }],
-                    [{ text: '¿Costo por matricula?', callback_data: 'costo_matricula_dd' }, { text: 'Estoy listo!', callback_data: 'asd' }],
-                    [{ text: '< Volver', callback_data: 'volver_edt_presencial' }],
-                ],
-            },
-        });
+    menuPresencial(ctx, info, 'plan_de_estudios_dd', 'como_funciona_dd', 'costo_matricula_dd', 'horarios_dd', 'volver_edt_presencial', 'elige_horario_dd');
 });
 
 // Marketing y Redes Sociales
 
 bot.action('marketing_redes', async (ctx) => {
-    try {
-        await ctx.deleteMessage();
-    } catch (error) {
-        console.log(error);
-    }
     const info = `
     Marketing Digital y Redes Sociales 
 
@@ -355,23 +305,9 @@ Una carrera con aval universitario y programa de pasantía, te dejo esto como no
 
 (⏳ Duración: 6 Meses)
     `;
-    await ctx.reply(info,
-        {
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: 'Plan de Estudios 📋', callback_data: 'plan_de_estudios_mr' }, { text: '¿Cómo funciona?', callback_data: 'como_funciona_mr' }],
-                    [{ text: '¿Costo por matricula?', callback_data: 'costo_matricula_mr' }, { text: 'Estoy listo!', callback_data: 'asd' }],
-                    [{ text: '< Volver', callback_data: 'volver_edt_presencial' }],
-                ],
-            },
-        });
+    menuPresencial(ctx, info, 'plan_de_estudios_mr', 'como_funciona_mr', 'costo_matricula_mr', 'horarios_mr', 'volver_edt_presencial', 'elige_horario_mr');
 });
 bot.action('plan_de_estudios_mr', async (ctx) => {
-    try {
-        await ctx.deleteMessage();
-    } catch (error) {
-        console.log(error);
-    }
     const info = `
     Plan de Estudios:
 
@@ -393,41 +329,17 @@ bot.action('plan_de_estudios_mr', async (ctx) => {
     ✔ Equipo social media dentro de la empresa
     ✔ Plan de marketing ¿Cómo lograr generar prospectos?
     `;
-    await ctx.reply(info,
-        {
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: '< Volver', callback_data: 'volver_edt_presencial_mr' }],
-                ],
-            },
-        });
+    planEstudios(ctx, info, 'volver_edt_presencial_mr');
 });
 bot.action('como_funciona_mr', async (ctx) => {
-    try {
-        await ctx.deleteMessage();
-    } catch (error) {
-        console.log(error);
-    }
     const info = `
     ¿Cómo funciona?
 
     B-LEARNING - Al menos una o dos clases presenciales en el Campus donde tienes acceso a internet de alta velocidad y computadoras, además tienes acceso al Campus Virtual con clases y sesiones en video.
     `;
-    await ctx.reply(info,
-        {
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: '< Volver', callback_data: 'volver_edt_presencial_mr' }],
-                ],
-            },
-        });
+    comoFunciona(ctx, info, 'volver_edt_presencial_mr');
 });
 bot.action('costo_matricula_mr', async (ctx) => {
-    try {
-        await ctx.deleteMessage();
-    } catch (error) {
-        console.log(error);
-    }
     const info = `
     ¿Costo por matricula?
 
@@ -435,21 +347,12 @@ bot.action('costo_matricula_mr', async (ctx) => {
 
     Pago 1 - 110 $ y luego 5 cuotas de 80 $ c/u
     `;
-    await ctx.reply(info,
-        {
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: '< Volver', callback_data: 'volver_edt_presencial_mr' }],
-                ],
-            },
-        });
+    costoMatricula(ctx, info, 'volver_edt_presencial_mr');
+});
+bot.action('horarios_mr', async (ctx) => {
+    schedules(ctx, 'volver_edt_presencial_mr');
 });
 bot.action('volver_edt_presencial_mr', async (ctx) => {
-    try {
-        await ctx.deleteMessage();
-    } catch (error) {
-        console.log(error);
-    }
     const info = `
     Marketing Digital y Redes Sociales
 
@@ -465,26 +368,12 @@ Una carrera con aval universitario y programa de pasantía, te dejo esto como no
 
 (⏳ Duración: 6 Meses)
     `;
-    await ctx.reply(info,
-        {
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: 'Plan de Estudios 📋', callback_data: 'plan_de_estudios_mr' }, { text: '¿Cómo funciona?', callback_data: 'como_funciona_mr' }],
-                    [{ text: '¿Costo por matricula?', callback_data: 'costo_matricula_mr' }, { text: 'Estoy listo!', callback_data: 'asd' }],
-                    [{ text: '< Volver', callback_data: 'volver_edt_presencial' }],
-                ],
-            },
-        });
+    menuPresencial(ctx, info, 'plan_de_estudios_mr', 'como_funciona_mr', 'costo_matricula_mr', 'horarios_mr', 'volver_edt_presencial', 'elige_horario_mr');
 });
 
 // Fotografia
 
 bot.action('fotografia', async (ctx) => {
-    try {
-        await ctx.deleteMessage();
-    } catch (error) {
-        console.log(error);
-    }
     const info = `
     Fotografía y edición de videos PRO
 
@@ -504,23 +393,9 @@ Crear tu primera sesión de fotos artística y tu primer trabajo documental.
 
 (⏳ Duración: 4 Meses)
     `;
-    await ctx.reply(info,
-        {
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: 'Plan de Estudios 📋', callback_data: 'plan_de_estudios_f' }, { text: '¿Cómo funciona?', callback_data: 'como_funciona_f' }],
-                    [{ text: '¿Costo por matricula?', callback_data: 'costo_matricula_f' }, { text: 'Estoy listo!', callback_data: 'asd' }],
-                    [{ text: '< Volver', callback_data: 'volver_edt_presencial' }],
-                ],
-            },
-        });
+    menuPresencial(ctx, info, 'plan_de_estudios_f', 'como_funciona_f', 'costo_matricula_f', 'horarios_f', 'volver_edt_presencial', 'elige_horario_f');
 });
 bot.action('plan_de_estudios_f', async (ctx) => {
-    try {
-        await ctx.deleteMessage();
-    } catch (error) {
-        console.log(error);
-    }
     const info = `
     Plan de Estudios:
 
@@ -530,90 +405,48 @@ bot.action('plan_de_estudios_f', async (ctx) => {
     ✔ Audiovisuales: Haciendo la magia
     ✔ Proyecto Audiovisual
     `;
-    await ctx.reply(info,
-        {
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: '< Volver', callback_data: 'volver_edt_presencial_f' }],
-                ],
-            },
-        });
+    planEstudios(ctx, info, 'volver_edt_presencial_f');
 });
 bot.action('como_funciona_f', async (ctx) => {
-    try {
-        await ctx.deleteMessage();
-    } catch (error) {
-        console.log(error);
-    }
     const info = `
     ¿Cómo funciona?
 
     Semipresencial - Tendrás acceso al campus con internet de alta velocidad, computadoras y monitores para las prácticas y también podrás acceder al Campus Virtual donde tendrás contenido disponible para practicar.
     `;
-    await ctx.reply(info,
-        {
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: '< Volver', callback_data: 'volver_edt_presencial_f' }],
-                ],
-            },
-        });
+    comoFunciona(ctx, info, 'volver_edt_presencial_f');
 });
 bot.action('costo_matricula_f', async (ctx) => {
-    try {
-        await ctx.deleteMessage();
-    } catch (error) {
-        console.log(error);
-    }
     const info = `
     ¿Costo por matricula?
 
     ¡OFERTA fin de trimestre! 360 $ en total. 1er pago 120 $ (inscripción + mensualidad) luego 3 cuotas de 80 $ c/u
     `;
-    await ctx.reply(info,
-        {
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: '< Volver', callback_data: 'volver_edt_presencial_f' }],
-                ],
-            },
-        });
+    costoMatricula(ctx, info, 'volver_edt_presencial_f');
+});
+bot.action('horarios_f', async (ctx) => {
+    schedules(ctx, 'volver_edt_presencial_f');
 });
 bot.action('volver_edt_presencial_f', async (ctx) => {
-    try {
-        await ctx.deleteMessage();
-    } catch (error) {
-        console.log(error);
-    }
     const info = `
     Fotografía y edición de videos PRO
-
-Desbloquea una habilidad que te permita generar ingresos presencial o remoto desde cualquier parte del mundo. Sí… se trata las artes visuales. 
-
-Cómo puedes estudiar Fotografía y edición de video en EDTécnica 
-
-Algo obvio pero… por si acaso.
-
-Necesitas cualquier cámara, aunque si tienes una PRO sería genial. 
-
-También vas a necesitar alguna versión de Adobe Premiere Pro CC para poder editar tus videos. De todos modos tenemos laboratorio equipado con equipos y todo los software de la suite de adobe para realizar tus prácticas.
-
-¿Qué lograrás una vez finalice tu curso?
-
-Crear tu primera sesión de fotos artística y tu primer trabajo documental.
-
-(⏳ Duración: 4 Meses)
+    
+    Desbloquea una habilidad que te permita generar ingresos presencial o remoto desde cualquier parte del mundo. Sí… se trata las artes visuales. 
+    
+    Cómo puedes estudiar Fotografía y edición de video en EDTécnica 
+    
+    Algo obvio pero… por si acaso.
+    
+    Necesitas cualquier cámara, aunque si tienes una PRO sería genial. 
+    
+    También vas a necesitar alguna versión de Adobe Premiere Pro CC para poder editar tus videos. De todos modos tenemos laboratorio equipado con equipos y todo los software de la suite de adobe para realizar tus prácticas.
+    
+    ¿Qué lograrás una vez finalice tu curso?
+    
+    Crear tu primera sesión de fotos artística y tu primer trabajo documental.
+    
+    (⏳ Duración: 4 Meses)
     `;
-    await ctx.reply(info,
-        {
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: 'Plan de Estudios 📋', callback_data: 'plan_de_estudios_f' }, { text: '¿Cómo funciona?', callback_data: 'como_funciona_f' }],
-                    [{ text: '¿Costo por matricula?', callback_data: 'costo_matricula_f' }, { text: 'Estoy listo!', callback_data: 'asd' }],
-                    [{ text: '< Volver', callback_data: 'volver_edt_presencial' }],
-                ],
-            },
-        });
+    menuPresencial(ctx, info, 'plan_de_estudios_f', 'como_funciona_f', 'costo_matricula_f', 'horarios_f', 'volver_edt_presencial', 'elige_horario_f');
 });
 
 // Volver a los cursos presenciales
