@@ -35,6 +35,15 @@ bot.action('volver_cursos', async (ctx) => {
         },
     });
 });
+const infoSchedules = `
+Horarios disponibles:
+
+1. Lunes y Martes, 9am a 12pm, inicia el 13/11/23
+
+2. Miercoles y Jueves, 1pm a 4pm, inicia el 15/11/23
+
+3. Sabados, 9am-12pm, inicia el 25/11/23
+`;
 
 // Programación
 
@@ -61,9 +70,9 @@ Nuestro objetivo es desarrollar y ayudar a profesionales que puedan trabajar en 
         {
             reply_markup: {
                 inline_keyboard: [
-                    [{ text: 'Plan de Estudios 📋', callback_data: 'plan_de_estudios_pr' }, { text: '¿Cómo funciona?', callback_data: 'como_funciona_pr' }],
-                    [{ text: '¿Costo por matricula?', callback_data: 'costo_matricula_pr' }, { text: 'Estoy listo!', callback_data: 'asd' }],
-                    [{ text: '< Volver', callback_data: 'volver_edt_presencial' }],
+                    [{ text: 'Plan de Estudios', callback_data: 'plan_de_estudios_pr' }, { text: '¿Cómo funciona?', callback_data: 'como_funciona_pr' }],
+                    [{ text: '¿Costo por matricula?', callback_data: 'costo_matricula_pr' }, { text: 'Horarios', callback_data: 'horarios' }],
+                    [{ text: '< Volver', callback_data: 'volver_edt_presencial' }, { text: 'Inscribirme ✅', callback_data: 'elige_horario_pr' }],
                 ],
             },
         });
@@ -131,6 +140,21 @@ bot.action('costo_matricula_pr', async (ctx) => {
     Pago 1 - 130 $ y luego 5 cuotas de 100 $ c/u 
     `;
     await ctx.reply(info,
+        {
+            reply_markup: {
+                inline_keyboard: [
+                    [{ text: '< Volver', callback_data: 'volver_edt_presencial_pr' }],
+                ],
+            },
+        });
+});
+bot.action('plan_de_estudios_pr', async (ctx) => {
+    try {
+        await ctx.deleteMessage();
+    } catch (error) {
+        console.log(error);
+    }
+    await ctx.reply(infoSchedules,
         {
             reply_markup: {
                 inline_keyboard: [

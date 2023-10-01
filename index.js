@@ -22,7 +22,6 @@ Siempre puedes preguntarnos sobre nuestros cursos, fechas de inicio, ubicaciones
 `;
 
 bot.start(async (ctx) => {
-    // Envio el mensaje de bienvenida
     await ctx.replyWithPhoto({ source: photoPath }, {
         caption: welcome,
     });
