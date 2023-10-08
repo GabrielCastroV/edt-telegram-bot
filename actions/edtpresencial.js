@@ -41,19 +41,19 @@ bot.action('volver_cursos', async (ctx) => {
 const menuPresencial = async (ctx, info, plan, funciona, costo, horarios, volver, inscribir) => {
     try {
         await ctx.deleteMessage();
+        await ctx.reply(info,
+            {
+                reply_markup: {
+                    inline_keyboard: [
+                        [{ text: 'Plan de Estudios', callback_data: plan }, { text: '¿Cómo funciona?', callback_data: funciona }],
+                        [{ text: '¿Costo por matricula?', callback_data: costo }, { text: 'Horarios', callback_data: horarios }],
+                        [{ text: '< Volver', callback_data: volver }, { text: 'Inscribirme ✅', callback_data: inscribir }],
+                    ],
+                },
+            });
     } catch (error) {
         console.log(error);
     }
-    await ctx.reply(info,
-        {
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: 'Plan de Estudios', callback_data: plan }, { text: '¿Cómo funciona?', callback_data: funciona }],
-                    [{ text: '¿Costo por matricula?', callback_data: costo }, { text: 'Horarios', callback_data: horarios }],
-                    [{ text: '< Volver', callback_data: volver }, { text: 'Inscribirme ✅', callback_data: inscribir }],
-                ],
-            },
-        });
 };
 
 // Plan de estudios (funcion)
@@ -61,17 +61,17 @@ const menuPresencial = async (ctx, info, plan, funciona, costo, horarios, volver
 const planEstudios = async (ctx, info, volver) => {
     try {
         await ctx.deleteMessage();
+        await ctx.reply(info,
+            {
+                reply_markup: {
+                    inline_keyboard: [
+                        [{ text: '< Volver', callback_data: volver }],
+                    ],
+                },
+            });
     } catch (error) {
         console.log(error);
     }
-    await ctx.reply(info,
-        {
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: '< Volver', callback_data: volver }],
-                ],
-            },
-        });
 };
 
 // Como funciona (funcion)
@@ -79,34 +79,34 @@ const planEstudios = async (ctx, info, volver) => {
 const comoFunciona = async (ctx, info, volver) => {
     try {
         await ctx.deleteMessage();
+        await ctx.reply(info,
+            {
+                reply_markup: {
+                    inline_keyboard: [
+                        [{ text: '< Volver', callback_data: volver }],
+                    ],
+                },
+            });
     } catch (error) {
         console.log(error);
     }
-    await ctx.reply(info,
-        {
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: '< Volver', callback_data: volver }],
-                ],
-            },
-        });
 };
 // Costo por matricula (funcion)
 
 const costoMatricula = async (ctx, info, volver) => {
     try {
         await ctx.deleteMessage();
+        await ctx.reply(info,
+            {
+                reply_markup: {
+                    inline_keyboard: [
+                        [{ text: '< Volver', callback_data: volver }],
+                    ],
+                },
+            });
     } catch (error) {
         console.log(error);
     }
-    await ctx.reply(info,
-        {
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: '< Volver', callback_data: volver }],
-                ],
-            },
-        });
 };
 
 // Schedules and Info. (funcion)
@@ -123,18 +123,59 @@ Horarios disponibles:
 const schedules = async (ctx, volver) => {
     try {
         await ctx.deleteMessage();
+        await ctx.reply(infoSchedules,
+            {
+                reply_markup: {
+                    inline_keyboard: [
+                        [{ text: '< Volver', callback_data: volver }],
+                    ],
+                },
+            });
     } catch (error) {
         console.log(error);
     }
-    await ctx.reply(infoSchedules,
-        {
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: '< Volver', callback_data: volver }],
-                ],
-            },
-        });
 };
+
+
+// inscribirse/pagar (funcion)
+
+const signUp = async (ctx, signature, amount) => {
+    try {
+        await ctx.deleteMessage();
+        const invoice = {
+            title: `Curso de ${signature}`,
+            description: 'El mejor curso',
+            payload: '1234567890',
+            provider_token: process.env.GLOCAL_TOKEN,
+            currency: 'USD',
+            prices: [
+                {
+                    label: `Inscripción de ${signature}`,
+                    amount: `${amount}`,
+                },
+            ],
+            photo_url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwHmPeMASti98AM8PAt9QNjOsful0TJCea8Q-rCfsizaPWlB0pGyGE2OO2xX-orWgrMDU&usqp=CAU',
+            need_name: true,
+            need_email: true,
+            need_phone_number: true,
+            send_email_to_provider: true,
+            photo_size: 4,
+            photo_width: '2000',
+        };
+        await ctx.sendInvoice(invoice);
+    } catch (error) {
+        ctx.reply(`ha ocurrido un error (${error})`);
+        console.log(error);
+    }
+};
+bot.on('pre_checkout_query', async (ctx) => {
+    try {
+        await ctx.answerPreCheckoutQuery(true);
+    } catch (error) {
+        console.log(error);
+        await ctx.answerPreCheckoutQuery(false, 'La compra no pudo ser procesada.');
+    }
+});
 
 // Programación
 
@@ -152,7 +193,7 @@ Nuestro objetivo es desarrollar y ayudar a profesionales que puedan trabajar en 
     
 (⏳ Duración: 6 Meses)
 `;
-    menuPresencial(ctx, info, 'plan_de_estudios_pr', 'como_funciona_pr', 'costo_matricula_pr', 'horarios_pr', 'volver_edt_presencial', 'elige_horario_pr');
+    menuPresencial(ctx, info, 'plan_de_estudios_pr', 'como_funciona_pr', 'costo_matricula_pr', 'horarios_pr', 'volver_edt_presencial', 'inscribir_pr');
 });
 bot.action('plan_de_estudios_pr', async (ctx) => {
     const info = `
@@ -192,6 +233,9 @@ bot.action('costo_matricula_pr', async (ctx) => {
 bot.action('horarios_pr', async (ctx) => {
     schedules(ctx, 'volver_edt_presencial_pr');
 });
+bot.action('inscribir_pr', async (ctx) => {
+    signUp(ctx, 'Programación Full Stack 🚀', 13000);
+});
 bot.action('volver_edt_presencial_pr', async (ctx) => {
     const info = `
     Programación Full Stack
@@ -227,7 +271,7 @@ Esta carrera técnica tiene aval universitario y además tenemos un programa de 
 
 (⏳ Duración: 6 Meses)
     `;
-    menuPresencial(ctx, info, 'plan_de_estudios_dd', 'como_funciona_dd', 'costo_matricula_dd', 'horarios_dd', 'volver_edt_presencial', 'elige_horario_dd');
+    menuPresencial(ctx, info, 'plan_de_estudios_dd', 'como_funciona_dd', 'costo_matricula_dd', 'horarios_dd', 'volver_edt_presencial', 'inscribir_dd');
 });
 bot.action('plan_de_estudios_dd', async (ctx) => {
     const info = `
@@ -268,6 +312,9 @@ bot.action('costo_matricula_dd', async (ctx) => {
 bot.action('horarios_dd', async (ctx) => {
     schedules(ctx, 'volver_edt_presencial_dd');
 });
+bot.action('inscribir_dd', async (ctx) => {
+    signUp(ctx, 'Diseño Digital', 13000);
+});
 bot.action('volver_edt_presencial_dd', async (ctx) => {
     const info = `
     Diseño Digital
@@ -305,7 +352,7 @@ Una carrera con aval universitario y programa de pasantía, te dejo esto como no
 
 (⏳ Duración: 6 Meses)
     `;
-    menuPresencial(ctx, info, 'plan_de_estudios_mr', 'como_funciona_mr', 'costo_matricula_mr', 'horarios_mr', 'volver_edt_presencial', 'elige_horario_mr');
+    menuPresencial(ctx, info, 'plan_de_estudios_mr', 'como_funciona_mr', 'costo_matricula_mr', 'horarios_mr', 'volver_edt_presencial', 'inscribir_mr');
 });
 bot.action('plan_de_estudios_mr', async (ctx) => {
     const info = `
@@ -352,6 +399,9 @@ bot.action('costo_matricula_mr', async (ctx) => {
 bot.action('horarios_mr', async (ctx) => {
     schedules(ctx, 'volver_edt_presencial_mr');
 });
+bot.action('inscribir_mr', async (ctx) => {
+    signUp(ctx, 'Marketing y Redes Sociales', 11000);
+});
 bot.action('volver_edt_presencial_mr', async (ctx) => {
     const info = `
     Marketing Digital y Redes Sociales
@@ -393,7 +443,7 @@ Crear tu primera sesión de fotos artística y tu primer trabajo documental.
 
 (⏳ Duración: 4 Meses)
     `;
-    menuPresencial(ctx, info, 'plan_de_estudios_f', 'como_funciona_f', 'costo_matricula_f', 'horarios_f', 'volver_edt_presencial', 'elige_horario_f');
+    menuPresencial(ctx, info, 'plan_de_estudios_f', 'como_funciona_f', 'costo_matricula_f', 'horarios_f', 'volver_edt_presencial', 'inscribir_f');
 });
 bot.action('plan_de_estudios_f', async (ctx) => {
     const info = `
@@ -425,6 +475,9 @@ bot.action('costo_matricula_f', async (ctx) => {
 });
 bot.action('horarios_f', async (ctx) => {
     schedules(ctx, 'volver_edt_presencial_f');
+});
+bot.action('inscribir_f', async (ctx) => {
+    signUp(ctx, 'Fotografía', 12000);
 });
 bot.action('volver_edt_presencial_f', async (ctx) => {
     const info = `
@@ -466,5 +519,9 @@ bot.action('volver_edt_presencial', async (ctx) => {
                 ],
             },
         });
+});
+
+bot.command('a', async (ctx) => {
+    signUp(ctx, 'Programacion Full Stack', 13000);
 });
 module.exports = bot.middleware();

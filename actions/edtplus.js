@@ -20,14 +20,29 @@ bot.action('plus', async (ctx) => {
         });
 });
 
-// Robótica EDT Plus
+// Función de EDT Plus
 
-bot.action('robotica_plus', async (ctx) => {
+const menuPlus = async (ctx, info, plan, funciona, costo, horarios, volver, inscribir) => {
     try {
         await ctx.deleteMessage();
     } catch (error) {
         console.log(error);
     }
+    await ctx.reply(info,
+        {
+            reply_markup: {
+                inline_keyboard: [
+                    [{ text: 'Plan de Estudios', callback_data: plan }, { text: '¿Cómo funciona?', callback_data: funciona }],
+                    [{ text: '¿Costo por matricula?', callback_data: costo }, { text: 'Horarios', callback_data: horarios }],
+                    [{ text: '< Volver', callback_data: volver }, { text: 'Inscribirme ✅', callback_data: inscribir }],
+                ],
+            },
+        });
+};
+
+// Robótica EDT Plus
+
+bot.action('robotica_plus', async (ctx) => {
     const info = `
     EDT Plus 🤖🕹
 
@@ -41,16 +56,7 @@ bot.action('robotica_plus', async (ctx) => {
     
     Te ayuda a aprender habilidades de alta demanda profesional que te ayudaran a tu desarrollo laboral en el futuro.
 `;
-    await ctx.reply(info,
-        {
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: 'Plan de Estudios 📋', callback_data: 'plan_de_estudios_ro' }, { text: '¿Cómo funciona?', callback_data: 'como_funciona_ro' }],
-                    [{ text: '¿Costo por matricula?', callback_data: 'costo_matricula_ro' }, { text: 'Estoy listo!', callback_data: 'asd' }],
-                    [{ text: '< Volver', callback_data: 'volver_edt_plus_cursos' }],
-                ],
-            },
-        });
+    menuPlus(ctx, info, 'plan_de_estudios_ro', 'como_funciona_ro', 'costo_matricula_ro', 'horarios_ro', 'volver_edt_plus_cursos', 'elige_horario_ro');
 });
 bot.action('plan_de_estudios_ro', async (ctx) => {
     try {
@@ -126,11 +132,6 @@ bot.action('costo_matricula_ro', async (ctx) => {
         });
 });
 bot.action('volver_edt_plus', async (ctx) => {
-    try {
-        await ctx.deleteMessage();
-    } catch (error) {
-        console.log(error);
-    }
     const info = `
     EDT Plus 🤖🕹
 
@@ -144,16 +145,7 @@ bot.action('volver_edt_plus', async (ctx) => {
     
     Te ayuda a aprender habilidades de alta demanda profesional que te ayudaran a tu desarrollo laboral en el futuro.
 `;
-    await ctx.reply(info,
-        {
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: 'Plan de Estudios 📋', callback_data: 'plan_de_estudios_ro' }, { text: '¿Cómo funciona?', callback_data: 'como_funciona_ro' }],
-                    [{ text: '¿Costo por matricula?', callback_data: 'costo_matricula_ro' }, { text: 'Estoy listo!', callback_data: 'asd' }],
-                    [{ text: '< Volver', callback_data: 'volver_edt_plus_cursos' }],
-                ],
-            },
-        });
+    menuPlus(ctx, info, 'plan_de_estudios_ro', 'como_funciona_ro', 'costo_matricula_ro', 'horarios_ro', 'volver_edt_plus_cursos', 'elige_horario_ro');
 });
 
 // Volver menu de EDT plus cursos

@@ -1,9 +1,10 @@
-const newUser = {
+const student = {
     name: String,
-    surname: String,
-    phoneNumber: String,
-    courseID: String,
+    email: String,
+    course: String,
     module: Number,
+    nextPayment: Date,
+    assistance: Number,
 };
 
-newUser;
+student;
