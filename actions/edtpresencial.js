@@ -1,4 +1,5 @@
 const { Telegraf } = require('telegraf');
+const nodemailer = require('nodemailer');
 require('dotenv').config();
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
@@ -144,7 +145,7 @@ const signUp = async (ctx, signature, amount) => {
         await ctx.deleteMessage();
         const invoice = {
             title: `Curso de ${signature}`,
-            description: 'El mejor curso',
+            description: `¡Potencia tu futuro con nuestro curso de ${signature}! Obtén la certificación que necesitas y lleva tu formación académica al siguiente nivel. Desarrolla habilidades de alto valor y alcanza tus metas educativas de manera eficaz!`,
             payload: '1234567890',
             provider_token: process.env.GLOCAL_TOKEN,
             currency: 'USD',
@@ -154,13 +155,14 @@ const signUp = async (ctx, signature, amount) => {
                     amount: `${amount}`,
                 },
             ],
-            photo_url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwHmPeMASti98AM8PAt9QNjOsful0TJCea8Q-rCfsizaPWlB0pGyGE2OO2xX-orWgrMDU&usqp=CAU',
+            photo_url: 'https://logowik.com/content/uploads/images/3799-javascript.jpg',
             need_name: true,
             need_email: true,
             need_phone_number: true,
             send_email_to_provider: true,
             photo_size: 4,
-            photo_width: '2000',
+            photo_width: 512,
+            photo_height: 512,
         };
         await ctx.sendInvoice(invoice);
     } catch (error) {
@@ -171,28 +173,120 @@ const signUp = async (ctx, signature, amount) => {
 bot.on('pre_checkout_query', async (ctx) => {
     try {
         await ctx.answerPreCheckoutQuery(true);
-        // console.log(ctx.update.pre_checkout_query);
+        const { id, from, currency, total_amount, order_info } = ctx.update.pre_checkout_query;
+        const userData = {
+            orderID: id,
+            username: from.username,
+            currency: currency,
+            total: (total_amount / 100),
+            name: order_info.name,
+            email: order_info.email,
+            phone: order_info.phone_number,
+        };
 
-        // const { id, from, total_amount } = ctx.update.pre_checkout_query;
-        // const { first_name, userID, username } = from;
-
-        // console.log('Datos del comprador:');
-        // console.log('id de la compra', id);
-        // console.log('Nombre de la cuenta de telegram:', first_name);
-        // console.log('id del usuario en telegram', userID ?? null);
-        // console.log('Nombre de usuario en telegram:', username);
-        // console.log('Nombre del comprador:', ctx.update.pre_checkout_query.order_info.name);
-        // console.log('Correo del comprador:', ctx.update.pre_checkout_query.order_info.email);
-        // console.log('Telefono del comprador:', ctx.update.pre_checkout_query.order_info.phone_number);
-        // console.log('Total a pagar:', (total_amount / 100), 'USD');
+        // Guardo los datos del comprador en una variable global para luego enviarle un email.
+        global.userData = userData;
     } catch (error) {
         console.log(error);
         await ctx.answerPreCheckoutQuery(false, 'La compra no pudo ser procesada.');
     }
 });
-bot.on('successful_payment', (ctx) => {
-    console.log(ctx.update.succesfull_payment);
-    ctx.reply('Pago realizado con éxito, se te ha enviado un correo electronico con mas info');
+
+bot.on('successful_payment', async (ctx) => {
+    ctx.reply('Pago realizado con éxito');
+    const userData = global.userData;
+    try {
+        const transporter = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS,
+            },
+        });
+        await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: userData.email,
+            subject: 'Inscripción realizada',
+            html: `<!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Bienvenido a EDTécnica</title>
+                <style>
+                    /* Estilos generales */
+                    body {
+                        font-family: Arial, sans-serif;
+                        margin: 0;
+                        padding: 0;
+                        background-color: #f4f4f4;
+                    }
+                    .container {
+                        max-width: 600px;
+                        margin: 0 auto;
+                        padding: 20px;
+                        background-color: #ffffff;
+                    }
+                    .header {
+                        text-align: center;
+                    }
+                    .logo {
+                        max-width: 200px;
+                        margin: 0 auto;
+                        display: block;
+                    }
+                    .welcome-message {
+                        text-align: center;
+                        font-size: 24px;
+                        margin-top: 20px;
+                    }
+                    .info {
+                        margin-top: 20px;
+                    }
+                    /* Estilos para dispositivos móviles */
+                    @media screen and (max-width: 480px) {
+                        .container {
+                            padding: 10px;
+                        }
+                        .welcome-message {
+                            font-size: 20px;
+                        }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <img src="https://i.imgur.com/RVobKku.jpg" alt="Logo de EDTécnica" class="logo">
+                    </div>
+                    <div class="welcome-message">
+                        ¡Bienvenido a EDTécnica!
+                    </div>
+                    <div class="info">
+                        <p>¡Felicidades, ya eres estudiante! Hemos recibido y procesado tu pago correctamente. Estamos emocionados de tenerte como parte de nuestra comunidad. A continuación, encontrarás información adicional:</p>
+                        <ul>
+                            <li>Detalles del curso</li>
+                            <li>Fecha de inicio</li>
+                            <li>Horarios</li>
+                            <!-- Agrega más información relevante aquí -->
+                        </ul>
+                        <p>No dudes en contactarnos si tienes alguna pregunta o necesitas asistencia adicional. ¡Esperamos que disfrutes tu experiencia en EDTécnica!</p>
+                        <p>Nuestro Campus EDT está ubicado en Los Palos Grandes, Torre Parque Cristal piso 12 oficina 12-4</p>
+                        <div style="text-align: center;">
+                            <a href="https://www.google.com/maps/place/EDT%C3%A9cnica+-+Cursos+y+Carreras/@10.4976891,-66.8432809,15z/data=!4m6!3m5!1s0x8c2a597949dc9579:0x7c11b2c3c93dde12!8m2!3d10.4976891!4d-66.8432809!16s%2Fg%2F11h6dz50d_?entry=ttu" style="background-color: #2D59FA; color: #ffffff; text-decoration: none; padding: 10px 20px; border-radius: 5px; display: inline-block;">Conoce nuestra sede</a>
+                        </div>
+
+                    </div>
+                </div>
+            </body>
+            </html>
+            `,
+        });
+    } catch (error) {
+        console.log(error);
+    }
 });
 
 // Programación
