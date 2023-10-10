@@ -171,10 +171,28 @@ const signUp = async (ctx, signature, amount) => {
 bot.on('pre_checkout_query', async (ctx) => {
     try {
         await ctx.answerPreCheckoutQuery(true);
+        // console.log(ctx.update.pre_checkout_query);
+
+        // const { id, from, total_amount } = ctx.update.pre_checkout_query;
+        // const { first_name, userID, username } = from;
+
+        // console.log('Datos del comprador:');
+        // console.log('id de la compra', id);
+        // console.log('Nombre de la cuenta de telegram:', first_name);
+        // console.log('id del usuario en telegram', userID ?? null);
+        // console.log('Nombre de usuario en telegram:', username);
+        // console.log('Nombre del comprador:', ctx.update.pre_checkout_query.order_info.name);
+        // console.log('Correo del comprador:', ctx.update.pre_checkout_query.order_info.email);
+        // console.log('Telefono del comprador:', ctx.update.pre_checkout_query.order_info.phone_number);
+        // console.log('Total a pagar:', (total_amount / 100), 'USD');
     } catch (error) {
         console.log(error);
         await ctx.answerPreCheckoutQuery(false, 'La compra no pudo ser procesada.');
     }
+});
+bot.on('successful_payment', (ctx) => {
+    console.log(ctx.update.succesfull_payment);
+    ctx.reply('Pago realizado con éxito, se te ha enviado un correo electronico con mas info');
 });
 
 // Programación
@@ -250,7 +268,7 @@ Nuestro objetivo es desarrollar y ayudar a profesionales que puedan trabajar en 
 
 (⏳ Duración: 6 Meses)
     `;
-    menuPresencial(ctx, info, 'plan_de_estudios_pr', 'como_funciona_pr', 'costo_matricula_pr', 'horarios_pr', 'volver_edt_presencial', 'elige_horario_pr');
+    menuPresencial(ctx, info, 'plan_de_estudios_pr', 'como_funciona_pr', 'costo_matricula_pr', 'horarios_pr', 'volver_edt_presencial', 'inscribir_pr');
 });
 
 // Diseño digital
@@ -331,7 +349,7 @@ Esta carrera técnica tiene aval universitario y además tenemos un programa de 
 
 (⏳ Duración: 6 Meses)
     `;
-    menuPresencial(ctx, info, 'plan_de_estudios_dd', 'como_funciona_dd', 'costo_matricula_dd', 'horarios_dd', 'volver_edt_presencial', 'elige_horario_dd');
+    menuPresencial(ctx, info, 'plan_de_estudios_dd', 'como_funciona_dd', 'costo_matricula_dd', 'horarios_dd', 'volver_edt_presencial', 'inscribir_dd');
 });
 
 // Marketing y Redes Sociales
@@ -418,7 +436,7 @@ Una carrera con aval universitario y programa de pasantía, te dejo esto como no
 
 (⏳ Duración: 6 Meses)
     `;
-    menuPresencial(ctx, info, 'plan_de_estudios_mr', 'como_funciona_mr', 'costo_matricula_mr', 'horarios_mr', 'volver_edt_presencial', 'elige_horario_mr');
+    menuPresencial(ctx, info, 'plan_de_estudios_mr', 'como_funciona_mr', 'costo_matricula_mr', 'horarios_mr', 'volver_edt_presencial', 'inscribir_mr');
 });
 
 // Fotografia
@@ -499,7 +517,7 @@ bot.action('volver_edt_presencial_f', async (ctx) => {
     
     (⏳ Duración: 4 Meses)
     `;
-    menuPresencial(ctx, info, 'plan_de_estudios_f', 'como_funciona_f', 'costo_matricula_f', 'horarios_f', 'volver_edt_presencial', 'elige_horario_f');
+    menuPresencial(ctx, info, 'plan_de_estudios_f', 'como_funciona_f', 'costo_matricula_f', 'horarios_f', 'volver_edt_presencial', 'inscribir_f');
 });
 
 // Volver a los cursos presenciales
