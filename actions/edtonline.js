@@ -1,5 +1,6 @@
 const { Telegraf } = require('telegraf');
 require('dotenv').config();
+const signUp = require('./pagos.js');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
@@ -96,7 +97,7 @@ const costoMatriculaOnline = async (ctx, info, volver) => {
 // Schedules and Info. (funcion)
 
 const infoSchedules = `
-Horarios disponibles:
+Horarios disponibles Online:
 
 1. Lunes y Martes, 9am a 12pm, inicia el 13/11/23
 
@@ -136,7 +137,7 @@ Nuestro objetivo es desarrollar y ayudar a profesionales que puedan trabajar en 
     
 (⏳ Duración: 6 Meses)
 `;
-    menuOnline(ctx, info, 'plan_de_estudios_pr_on', 'como_funciona_pr_on', 'costo_matricula_pr_on', 'horarios_pr_on', 'volver_edt_online', 'elige_horario_pr_on');
+    menuOnline(ctx, info, 'plan_de_estudios_pr_on', 'como_funciona_pr_on', 'costo_matricula_pr_on', 'horarios_pr_on', 'volver_edt_online', 'inscribir_pr_on');
 });
 bot.action('plan_de_estudios_pr_on', async (ctx) => {
     const info = `
@@ -178,6 +179,9 @@ bot.action('costo_matricula_pr_on', async (ctx) => {
 bot.action('horarios_pr_on', async (ctx) => {
     schedulesOnline(ctx, 'volver_edt_online_pr');
 });
+bot.action('inscribir_pr_on', async (ctx) => {
+    signUp(ctx, 'Programación Full Stack Onlne 🚀', 10000);
+});
 bot.action('volver_edt_online_pr', async (ctx) => {
     const info = `
     Programación Full Stack - Online
@@ -192,7 +196,7 @@ bot.action('volver_edt_online_pr', async (ctx) => {
     
     (⏳ Duración: 6 Meses)
     `;
-    menuOnline(ctx, info, 'plan_de_estudios_pr_on', 'como_funciona_pr_on', 'costo_matricula_pr_on', 'horarios_pr_on', 'volver_edt_online', 'elige_horario_pr_on');
+    menuOnline(ctx, info, 'plan_de_estudios_pr_on', 'como_funciona_pr_on', 'costo_matricula_pr_on', 'horarios_pr_on', 'volver_edt_online', 'inscribir_pr_on');
 });
 
 // Marketing y Redes Sociales
@@ -213,7 +217,7 @@ Una carrera con aval universitario y programa de pasantía, te dejo esto como no
 
 (⏳ Duración: 6 Meses)
     `;
-    menuOnline(ctx, info, 'plan_de_estudios_mr_on', 'como_funciona_mr_on', 'costo_matricula_mr_on', 'horarios_mr_on', 'volver_edt_online', 'elige_horario_mr_on');
+    menuOnline(ctx, info, 'plan_de_estudios_mr_on', 'como_funciona_mr_on', 'costo_matricula_mr_on', 'horarios_mr_on', 'volver_edt_online', 'inscribir_mr_on');
 });
 bot.action('plan_de_estudios_mr_on', async (ctx) => {
     const info = `
@@ -260,6 +264,9 @@ bot.action('costo_matricula_mr_on', async (ctx) => {
 bot.action('horarios_mr_on', async (ctx) => {
     schedulesOnline(ctx, 'volver_edt_online_mr');
 });
+bot.action('inscribir_mr_on', async (ctx) => {
+    signUp(ctx, 'Marketing y Redes Sociales Online', 10000);
+});
 bot.action('volver_edt_online_mr', async (ctx) => {
     const info = `
     Marketing Digital y Redes Sociales - Online
@@ -276,7 +283,7 @@ Una carrera con aval universitario y programa de pasantía, te dejo esto como no
 
 (⏳ Duración: 6 Meses)
     `;
-    menuOnline(ctx, info, 'plan_de_estudios_mr_on', 'como_funciona_mr_on', 'costo_matricula_mr_on', 'horarios_mr_on', 'volver_edt_online', 'elige_horario_mr_on');
+    menuOnline(ctx, info, 'plan_de_estudios_mr_on', 'como_funciona_mr_on', 'costo_matricula_mr_on', 'horarios_mr_on', 'volver_edt_online', 'inscribir_mr_on');
 });
 
 // Volver a los cursos online
@@ -298,4 +305,5 @@ bot.action('volver_edt_online', async (ctx) => {
         });
 });
 
+bot.use(signUp);
 module.exports = bot.middleware();

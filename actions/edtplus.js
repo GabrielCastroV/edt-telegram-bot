@@ -1,5 +1,6 @@
 const { Telegraf } = require('telegraf');
 require('dotenv').config();
+const signUp = require('./pagos.js');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
@@ -40,6 +41,33 @@ const menuPlus = async (ctx, info, plan, funciona, costo, horarios, volver, insc
         });
 };
 
+// Schedules and Info. (funcion)
+
+const infoSchedules = `
+Horarios disponibles Online:
+
+1. Lunes y Martes, 9am a 12pm, inicia el 13/11/23
+
+2. Miercoles y Jueves, 1pm a 4pm, inicia el 15/11/23
+
+3. Sabados, 9am-12pm, inicia el 25/11/23
+`;
+const schedulesPlus = async (ctx, volver) => {
+    try {
+        await ctx.deleteMessage();
+    } catch (error) {
+        console.log(error);
+    }
+    await ctx.reply(infoSchedules,
+        {
+            reply_markup: {
+                inline_keyboard: [
+                    [{ text: '< Volver', callback_data: volver }],
+                ],
+            },
+        });
+};
+
 // Robótica EDT Plus
 
 bot.action('robotica_plus', async (ctx) => {
@@ -56,7 +84,7 @@ bot.action('robotica_plus', async (ctx) => {
     
     Te ayuda a aprender habilidades de alta demanda profesional que te ayudaran a tu desarrollo laboral en el futuro.
 `;
-    menuPlus(ctx, info, 'plan_de_estudios_ro', 'como_funciona_ro', 'costo_matricula_ro', 'horarios_ro', 'volver_edt_plus_cursos', 'elige_horario_ro');
+    menuPlus(ctx, info, 'plan_de_estudios_ro', 'como_funciona_ro', 'costo_matricula_ro', 'horarios_ro', 'volver_edt_plus_cursos', 'inscribir_ro');
 });
 bot.action('plan_de_estudios_ro', async (ctx) => {
     try {
@@ -131,6 +159,12 @@ bot.action('costo_matricula_ro', async (ctx) => {
             },
         });
 });
+bot.action('horarios_ro', async (ctx) => {
+    schedulesPlus(ctx, 'volver_edt_plus');
+});
+bot.action('inscribir_ro', async (ctx) => {
+    signUp(ctx, 'Robótica EDT Plus 🤖', 10000);
+});
 bot.action('volver_edt_plus', async (ctx) => {
     const info = `
     EDT Plus 🤖🕹
@@ -145,7 +179,7 @@ bot.action('volver_edt_plus', async (ctx) => {
     
     Te ayuda a aprender habilidades de alta demanda profesional que te ayudaran a tu desarrollo laboral en el futuro.
 `;
-    menuPlus(ctx, info, 'plan_de_estudios_ro', 'como_funciona_ro', 'costo_matricula_ro', 'horarios_ro', 'volver_edt_plus_cursos', 'elige_horario_ro');
+    menuPlus(ctx, info, 'plan_de_estudios_ro', 'como_funciona_ro', 'costo_matricula_ro', 'horarios_ro', 'volver_edt_plus_cursos', 'inscribir_ro');
 });
 
 // Volver menu de EDT plus cursos
@@ -167,4 +201,5 @@ bot.action('volver_edt_plus_cursos', async (ctx) => {
         });
 });
 
+bot.use(signUp);
 module.exports = bot.middleware();
