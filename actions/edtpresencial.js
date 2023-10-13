@@ -482,5 +482,4 @@ bot.action('volver_edt_presencial', async (ctx) => {
         });
 });
 
-bot.use(signUp);
 module.exports = bot.middleware();
