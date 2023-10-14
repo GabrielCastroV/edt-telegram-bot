@@ -3,7 +3,8 @@ const student = {
     email: String,
     course: String,
     module: Number,
-    nextPayment: Date,
+    notes: Number,
+    paymentDay: Date,
     assistance: Number,
 };
 
