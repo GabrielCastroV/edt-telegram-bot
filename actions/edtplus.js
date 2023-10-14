@@ -1,6 +1,6 @@
 const { Telegraf } = require('telegraf');
 require('dotenv').config();
-const signUp = require('./pagos.js');
+const { signUp, middleware } = require('./pagos.js');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
@@ -163,7 +163,7 @@ bot.action('horarios_ro', async (ctx) => {
     schedulesPlus(ctx, 'volver_edt_plus');
 });
 bot.action('inscribir_ro', async (ctx) => {
-    signUp(ctx, 'Robótica EDT Plus 🤖', 10000);
+    signUp(ctx, 'Robótica EDT Plus 🤖', 10000, 'https://i.imgur.com/luRetCP.jpg');
 });
 bot.action('volver_edt_plus', async (ctx) => {
     const info = `
@@ -201,5 +201,5 @@ bot.action('volver_edt_plus_cursos', async (ctx) => {
         });
 });
 
-bot.use(signUp);
+bot.use(middleware);
 module.exports = bot.middleware();

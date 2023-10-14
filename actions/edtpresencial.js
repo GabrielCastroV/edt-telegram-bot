@@ -1,6 +1,6 @@
 const { Telegraf } = require('telegraf');
 require('dotenv').config();
-const signUp = require('./pagos.js');
+const { signUp, middleware } = require('./pagos.js');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
@@ -195,7 +195,7 @@ bot.action('horarios_pr', async (ctx) => {
     schedules(ctx, 'volver_edt_presencial_pr');
 });
 bot.action('inscribir_pr', async (ctx) => {
-    signUp(ctx, 'Programación Full Stack 🚀', 13000);
+    signUp(ctx, 'Programación Full Stack 🚀', 13000, 'https://i.imgur.com/hvnITG8.jpg');
 });
 bot.action('volver_edt_presencial_pr', async (ctx) => {
     const info = `
@@ -274,7 +274,7 @@ bot.action('horarios_dd', async (ctx) => {
     schedules(ctx, 'volver_edt_presencial_dd');
 });
 bot.action('inscribir_dd', async (ctx) => {
-    signUp(ctx, 'Diseño Digital', 13000);
+    signUp(ctx, 'Diseño Digital', 13000, 'https://i.imgur.com/HtX2Dfc.jpg');
 });
 bot.action('volver_edt_presencial_dd', async (ctx) => {
     const info = `
@@ -361,7 +361,7 @@ bot.action('horarios_mr', async (ctx) => {
     schedules(ctx, 'volver_edt_presencial_mr');
 });
 bot.action('inscribir_mr', async (ctx) => {
-    signUp(ctx, 'Marketing y Redes Sociales', 11000);
+    signUp(ctx, 'Marketing y Redes Sociales', 11000, 'https://i.imgur.com/34YMyWK.jpg');
 });
 bot.action('volver_edt_presencial_mr', async (ctx) => {
     const info = `
@@ -438,7 +438,7 @@ bot.action('horarios_f', async (ctx) => {
     schedules(ctx, 'volver_edt_presencial_f');
 });
 bot.action('inscribir_f', async (ctx) => {
-    signUp(ctx, 'Fotografía', 12000);
+    signUp(ctx, 'Fotografía', 12000, 'https://i.imgur.com/lmeAW1r.jpg');
 });
 bot.action('volver_edt_presencial_f', async (ctx) => {
     const info = `
@@ -482,4 +482,5 @@ bot.action('volver_edt_presencial', async (ctx) => {
         });
 });
 
+bot.use(middleware);
 module.exports = bot.middleware();

@@ -1,6 +1,6 @@
 const { Telegraf } = require('telegraf');
 require('dotenv').config();
-const signUp = require('./pagos.js');
+const { signUp, middleware } = require('./pagos.js');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
@@ -180,7 +180,7 @@ bot.action('horarios_pr_on', async (ctx) => {
     schedulesOnline(ctx, 'volver_edt_online_pr');
 });
 bot.action('inscribir_pr_on', async (ctx) => {
-    signUp(ctx, 'Programación Full Stack Onlne 🚀', 10000);
+    signUp(ctx, 'Programación Full Stack Online 🚀', 10000, 'https://i.imgur.com/hvnITG8.jpg');
 });
 bot.action('volver_edt_online_pr', async (ctx) => {
     const info = `
@@ -265,7 +265,7 @@ bot.action('horarios_mr_on', async (ctx) => {
     schedulesOnline(ctx, 'volver_edt_online_mr');
 });
 bot.action('inscribir_mr_on', async (ctx) => {
-    signUp(ctx, 'Marketing y Redes Sociales Online', 10000);
+    signUp(ctx, 'Marketing y Redes Sociales Online', 10000, 'https://i.imgur.com/34YMyWK.jpg');
 });
 bot.action('volver_edt_online_mr', async (ctx) => {
     const info = `
@@ -305,5 +305,5 @@ bot.action('volver_edt_online', async (ctx) => {
         });
 });
 
-bot.use(signUp);
+bot.use(middleware);
 module.exports = bot.middleware();

@@ -7,7 +7,7 @@ const bot = new Telegraf(process.env.BOT_TOKEN);
 
 // inscribirse/pagar (funcion)
 
-const signUp = async (ctx, signature, amount) => {
+const signUp = async (ctx, signature, amount, photo_url) => {
     try {
         await ctx.deleteMessage();
         const invoice = {
@@ -22,7 +22,7 @@ const signUp = async (ctx, signature, amount) => {
                     amount: `${amount}`,
                 },
             ],
-            photo_url: 'https://logowik.com/content/uploads/images/3799-javascript.jpg',
+            photo_url: `${photo_url}`,
             need_name: true,
             need_email: true,
             need_phone_number: true,
@@ -155,5 +155,8 @@ bot.on('successful_payment', async (ctx) => {
         console.log(error);
     }
 });
-module.exports = signUp;
-module.exports = bot.middleware();
+
+module.exports = {
+    signUp: signUp,
+    middleware: bot.middleware(),
+};

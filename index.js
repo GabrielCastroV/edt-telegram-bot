@@ -6,7 +6,7 @@ const commandFaq = require('./commands/faq');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
-const photoPath = 'img/logo.jpg';
+const photoPath = 'img/pfp.png';
 const welcome = `
 ¡Bienvenido al Asistente Virtual de EDTecnica!
 
