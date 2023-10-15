@@ -163,7 +163,7 @@ bot.action('horarios_ro', async (ctx) => {
     schedulesPlus(ctx, 'volver_edt_plus');
 });
 bot.action('inscribir_ro', async (ctx) => {
-    signUp(ctx, 'Robótica EDT Plus 🤖', 10000, 'https://i.imgur.com/luRetCP.jpg');
+    signUp(ctx, 'Robótica EDT Plus 🤖', 10000, 'https://i.imgur.com/mdpWirS.jpg');
 });
 bot.action('volver_edt_plus', async (ctx) => {
     const info = `

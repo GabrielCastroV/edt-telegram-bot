@@ -361,7 +361,7 @@ bot.action('horarios_mr', async (ctx) => {
     schedules(ctx, 'volver_edt_presencial_mr');
 });
 bot.action('inscribir_mr', async (ctx) => {
-    signUp(ctx, 'Marketing y Redes Sociales', 11000, 'https://i.imgur.com/34YMyWK.jpg');
+    signUp(ctx, 'Marketing y Redes Sociales', 11000, 'https://i.imgur.com/waOlFNb.jpg');
 });
 bot.action('volver_edt_presencial_mr', async (ctx) => {
     const info = `
