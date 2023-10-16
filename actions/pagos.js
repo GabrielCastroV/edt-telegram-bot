@@ -43,7 +43,7 @@ bot.on('pre_checkout_query', async (ctx) => {
         const { id, from, currency, total_amount, invoice_payload, order_info } = ctx.update.pre_checkout_query;
         const userData = {
             orderID: id,
-            username: from.username,
+            username: from.username ?? 'user',
             first_name: from.first_name,
             currency: currency,
             total: (total_amount / 100),
