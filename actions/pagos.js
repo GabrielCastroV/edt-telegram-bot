@@ -73,6 +73,7 @@ bot.on('successful_payment', async (ctx) => {
     });
     const userData = global.userData;
     try {
+        console.log(userData);
         await ctx.reply(`Felicidades ${userData.first_name}, su pago ha sido procesado exitosamente. Por favor revisa tu correo para más información sobre su compra.`);
         await transporter.sendMail({
             from: process.env.EMAIL_USER,
