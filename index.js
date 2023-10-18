@@ -59,5 +59,3 @@ bot.on('sticker', (ctx) => {
 })();
 
 bot.use(commandCourses, commandLocation, commandFaq, login);
-
-module.exports = bot;
