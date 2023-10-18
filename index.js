@@ -3,6 +3,7 @@ require('dotenv').config();
 const commandCourses = require('./commands/courses');
 const commandLocation = require('./commands/location');
 const commandFaq = require('./commands/faq');
+const login = require('./login/login');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
@@ -57,4 +58,6 @@ bot.on('sticker', (ctx) => {
     }
 })();
 
-bot.use(commandCourses, commandLocation, commandFaq);
+bot.use(commandCourses, commandLocation, commandFaq, login);
+
+module.exports = bot;
