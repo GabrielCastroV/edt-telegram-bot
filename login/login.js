@@ -1,4 +1,6 @@
+const mongoose = require('mongoose');
 const { Telegraf, session, Scenes: { WizardScene, Stage } } = require('telegraf');
+const User = require('../models/users');
 require('dotenv').config();
 
 // Creo la wizard scene
@@ -22,12 +24,30 @@ const login = new WizardScene(
             // Salgo de la escena
             return ctx.scene.leave();
         }
-        await ctx.reply('email correcto');
+        // Consulta a la base de datos para buscar el usuario por correo electrónico
+        const user = await User.findOne({ email: ctx.wizard.state.data.email });
+        if (user) {
+            // El correo existe en la base de datos, muestra el valor de "Studying" por consola.
+            console.log('El valor de "Studying" del usuario es:', user.studying);
+        } else {
+            // El correo no existe en la base de datos.
+            await ctx.reply('Correo no encontrado en la base de datos. Recuerda que debes estar cursando el primer módulo para asignarte tu usuario de EDTécnica.');
+        }
         return ctx.scene.leave();
     },
 );
 const stage = new Stage([login]);
 const bot = new Telegraf(process.env.BOT_TOKEN);
+
+(async () => {
+    try {
+        await mongoose.connect(process.env.MONGO_URI);
+        console.log('Conectó a mongodb');
+    } catch (error) {
+        console.error(error);
+        console.log('No conectado con mongodb');
+    }
+})();
 
 bot.use(session());
 bot.use(stage.middleware());
