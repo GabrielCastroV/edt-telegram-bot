@@ -135,7 +135,7 @@ bot.on('successful_payment', async (ctx) => {
                         <ul>
                             <li>Número de orden: #${userData.orderID}</li>
                             <li>Nombre del comprador: ${userData.name}</li>
-                            <li>Usuario en Telegram: ${userData.username}</li>
+                            <li>Usuario en Telegram: ${userData.username || 'username privado'}</li>
                             <li>Costo de inscripción: ${userData.total} ${userData.currency}</li>
                         </ul>
                         <div style="text-align: end;">
