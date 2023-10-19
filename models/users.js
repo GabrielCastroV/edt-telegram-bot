@@ -1,11 +1,13 @@
-const student = {
+const mongoose = require('mongoose');
+
+const userSchema = new mongoose.Schema({
     name: String,
     email: String,
-    course: String,
+    studying: mongoose.Schema.Types.ObjectId,
     module: Number,
-    notes: Number,
-    paymentDay: Date,
-    assistance: Number,
-};
+    payday: Date,
+});
 
-student;
+const User = mongoose.model('User', userSchema);
+
+module.exports = User;
