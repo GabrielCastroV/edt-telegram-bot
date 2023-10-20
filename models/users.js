@@ -6,6 +6,8 @@ const userSchema = new mongoose.Schema({
     studying: mongoose.Schema.Types.ObjectId,
     module: Number,
     payday: Date,
+    attendance: String,
+    verified: Boolean,
 });
 
 const User = mongoose.model('User', userSchema);
