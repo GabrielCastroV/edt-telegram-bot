@@ -28,9 +28,9 @@ const login = new WizardScene(
         // Consulta a la base de datos para buscar el usuario por correo electrónico
         const user = await User.findOne({ email: ctx.wizard.state.data.email });
         // Consulto tambien que curso esta estudiando
-        const userCourse = await Course.findOne({ _id: user.studying });
+        const userCourse = await Course.findOne({ _id: user?.studying });
         // Consulto si el usuario esta verificado o no.
-        const verified = user.verified;
+        const verified = user?.verified;
         // Guardo la info del usuario para usarla luego.
         ctx.wizard.state.data.user = user;
         ctx.wizard.state.data.userCourse = userCourse;
