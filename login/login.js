@@ -68,6 +68,7 @@ const login = new WizardScene(
             // Verifico al usuario pe causa
             ctx.wizard.state.data.verified = await User.findOneAndUpdate({ verified: true });
             await ctx.reply('ingresando...');
+            await ctx.deleteMessage();
             await ctx.reply(`
             Bienvenido ${ctx.wizard.state.data.user.name} \n
             Cursando: ${ctx.wizard.state.data.userCourse.name} en la modalidad ${ctx.wizard.state.data.userCourse.modality}
