@@ -8,6 +8,10 @@ const userSchema = new mongoose.Schema({
     payday: Date,
     attendance: String,
     verified: Boolean,
+    grades: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Grades',
+    }],
 });
 
 const User = mongoose.model('User', userSchema);
