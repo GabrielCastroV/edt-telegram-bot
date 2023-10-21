@@ -87,7 +87,7 @@ ${ctx.wizard.state.data.grades.join(' \n')}
             await ctx.reply('El codigo ingresado no es valido, intenta loguearte mas tarde.');
             return ctx.scene.leave();
         } else if (ctx.wizard.state.data.code === ctx.wizard.state.data.temporalPass) {
-            // Verifico al usuario pe causa
+            // Verifico al usuario pe causa.
             await User.findByIdAndUpdate(ctx.wizard.state.data.user._id, { verified: true });
             await ctx.reply('ingresando...');
             for (let i = 0; i < ctx.wizard.state.data.userGrade.length; i++) {
@@ -117,7 +117,6 @@ ${ctx.wizard.state.data.grades.join(' \n')}
         }
 
     },
-
 );
 const stage = new Stage([login]);
 const bot = new Telegraf(process.env.BOT_TOKEN);
