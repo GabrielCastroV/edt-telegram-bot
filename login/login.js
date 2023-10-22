@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { Telegraf, session, Scenes: { WizardScene, Stage } } = require('telegraf');
+const nodemailer = require('nodemailer');
 const User = require('../models/users');
 const Course = require('../models/courses');
 const Grades = require('../models/grades');
@@ -47,8 +48,26 @@ const login = new WizardScene(
             return ctx.scene.leave();
         } else if (!verified) {
             // De no estar verificado, le enviamos un correo con su clave temporal.
-            const temporalPass = '123456';
+            const temporalPass = Math.floor(Math.random() * 900000) + 100000;
             ctx.wizard.state.data.temporalPass = temporalPass;
+            try {
+                const transporter = nodemailer.createTransport({
+                    host: 'smtp.gmail.com',
+                    port: 465,
+                    secure: true,
+                    auth: {
+                        user: process.env.EMAIL_USER,
+                        pass: process.env.EMAIL_PASS,
+                    },
+                });
+                await transporter.sendMail({
+                    from: process.env.EMAIL_USER,
+                    to: ctx.wizard.state.data.email,
+                    subject: 'Clave temporal EDT Bot',
+                    html: `Código de verificacion es: <b> ${temporalPass} </b>` });
+            } catch (error) {
+                console.log(error);
+            }
 
             await ctx.reply(`${user.name}, ingresa el código que fue enviado a tu correo:`);
             return ctx.wizard.next();
@@ -83,10 +102,10 @@ ${ctx.wizard.state.data.grades.join(' \n')}
     },
     async ctx => {
         ctx.wizard.state.data.code = ctx.message?.text;
-        if (ctx.wizard.state.data.code !== ctx.wizard.state.data.temporalPass) {
+        if (ctx.wizard.state.data.code != ctx.wizard.state.data.temporalPass) {
             await ctx.reply('El codigo ingresado no es valido, intenta loguearte mas tarde.');
             return ctx.scene.leave();
-        } else if (ctx.wizard.state.data.code === ctx.wizard.state.data.temporalPass) {
+        } else if (ctx.wizard.state.data.code == ctx.wizard.state.data.temporalPass) {
             // Verifico al usuario pe causa.
             await User.findByIdAndUpdate(ctx.wizard.state.data.user._id, { verified: true });
             await ctx.reply('ingresando...');
