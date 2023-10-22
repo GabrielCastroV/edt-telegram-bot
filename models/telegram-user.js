@@ -7,6 +7,6 @@ const telegramUserSchema = new mongoose.Schema({
     type: String,
 });
 
-const TelegramUser = mongoose.model('TelegramUser', telegramUserSchema);
+const TelegramUser = mongoose.model('Telegram-User', telegramUserSchema);
 
 module.exports = TelegramUser;

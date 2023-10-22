@@ -10,17 +10,20 @@ const bot = new Telegraf(process.env.BOT_TOKEN);
 
 
 bot.start(async (ctx) => {
-    const user = TelegramUser.findOne({ telegramId: ctx.update.message.chat.id });
+    // Verifico si el usuario existe en mi base de datos.
+    const user = await TelegramUser.findOne({ telegramId: ctx.update.message.chat.id });
     if (!user) {
+        // De no estar en mi DB, lo registro :)
         const newUser = new TelegramUser({
             telegramId: ctx.update.message.chat.id,
             name: ctx.update.message.chat.first_name,
-            username: ctx.update.message.chat?.username,
+            username: ctx.update.message.chat.username ?? 'privated user',
             type: ctx.update.message.chat.type,
         });
         await newUser.save();
         console.log('Usuario nuevo creado.', newUser);
     } else if (user.name !== ctx.update.message.chat.first_name || user.username !== ctx.update.message.chat.username || user.type !== ctx.update.message.chat.type) {
+        // En caso de que el usuario haya modificado algo de su perfil, lo actualizo en mi DB.
         await TelegramUser.findOneAndUpdate({ telegramId: ctx.update.message.chat.id }, {
             name: ctx.update.message.chat.first_name,
             username: ctx.update.message.chat.username,
