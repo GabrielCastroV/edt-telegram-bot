@@ -90,6 +90,7 @@ ${ctx.wizard.state.data.grades.join(' \n')}
             // Verifico al usuario pe causa.
             await User.findByIdAndUpdate(ctx.wizard.state.data.user._id, { verified: true });
             await ctx.reply('ingresando...');
+            // Agrego sus modulos y notas a las variables correspondidas.
             for (let i = 0; i < ctx.wizard.state.data.userGrade.length; i++) {
                 ctx.wizard.state.data.grades.push(`✯ Módulo ${ctx.wizard.state.data.userGrade[i].module}, calificación: ${ctx.wizard.state.data.userGrade[i].grade}/20`);
                 ctx.wizard.state.data.grade += (ctx.wizard.state.data.userGrade[i].grade);

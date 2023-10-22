@@ -1,4 +1,5 @@
 const { Telegraf } = require('telegraf');
+const TelegramUser = require('./models/telegram-user');
 require('dotenv').config();
 const commandCourses = require('./commands/courses');
 const commandLocation = require('./commands/location');
@@ -7,8 +8,28 @@ const login = require('./login/login');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
-const photoPath = 'img/pfp.png';
-const welcome = `
+
+bot.start(async (ctx) => {
+    const user = TelegramUser.findOne({ telegramId: ctx.update.message.chat.id });
+    if (!user) {
+        const newUser = new TelegramUser({
+            telegramId: ctx.update.message.chat.id,
+            name: ctx.update.message.chat.first_name,
+            username: ctx.update.message.chat?.username,
+            type: ctx.update.message.chat.type,
+        });
+        await newUser.save();
+        console.log('Usuario nuevo creado.', newUser);
+    } else if (user.name !== ctx.update.message.chat.first_name || user.username !== ctx.update.message.chat.username || user.type !== ctx.update.message.chat.type) {
+        await TelegramUser.findOneAndUpdate({ telegramId: ctx.update.message.chat.id }, {
+            name: ctx.update.message.chat.first_name,
+            username: ctx.update.message.chat.username,
+            type: ctx.update.message.chat.type,
+        });
+        console.log(`El usuario ${ctx.update.message.chat.first_name} ha sido actualizado`);
+    }
+    const photoPath = 'img/pfp.png';
+    const welcome = `
 ¡Bienvenido al Asistente Virtual de EDTecnica!
 
 Somos tu guía personal para explorar todos los servicios y cursos que ofrecemos. Ya sea que estés interesado en aprender programación, diseño digital, marketing, robótica, fotografía u otros campos emocionantes, estamos aquí para ayudarte en cada paso del camino.
@@ -21,8 +42,6 @@ Siempre puedes preguntarnos sobre nuestros cursos, fechas de inicio, ubicaciones
 
 #EnfocadoseEnTuFuturo
 `;
-
-bot.start(async (ctx) => {
     await ctx.replyWithPhoto({ source: photoPath }, {
         caption: welcome,
     });
