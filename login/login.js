@@ -47,9 +47,10 @@ const login = new WizardScene(
             await ctx.reply('Correo no encontrado en la base de datos. Recuerda que debes estar cursando el primer módulo o superior para asignarte tu usuario de EDTécnica.');
             return ctx.scene.leave();
         } else if (!verified) {
-            // De no estar verificado, le enviamos un correo con su clave temporal.
+            // Creamos un número aleatorio de 6 dígitos que será su clave temporal para iniciar sesión.
             const temporalPass = Math.floor(Math.random() * 900000) + 100000;
             ctx.wizard.state.data.temporalPass = temporalPass;
+            // De no estar verificado, le enviamos un correo con su clave temporal.
             try {
                 const transporter = nodemailer.createTransport({
                     host: 'smtp.gmail.com',
@@ -75,7 +76,7 @@ const login = new WizardScene(
             // Agrego sus modulos y notas a las variables correspondidas.
             for (let i = 0; i < ctx.wizard.state.data.userGrade.length; i++) {
                 ctx.wizard.state.data.grades.push(`✯ Módulo ${ctx.wizard.state.data.userGrade[i].module}, calificación: ${ctx.wizard.state.data.userGrade[i].grade}/20`);
-                ctx.wizard.state.data.grade += (ctx.wizard.state.data.userGrade[i].grade);
+                ctx.wizard.state.data.grade += ctx.wizard.state.data.userGrade[i].grade;
             }
             await ctx.replyWithHTML(`
             Bienvenido <b>${ctx.wizard.state.data.user.name}</b> 👋
@@ -102,6 +103,7 @@ ${ctx.wizard.state.data.grades.join(' \n')}
     },
     async ctx => {
         ctx.wizard.state.data.code = ctx.message?.text;
+        // Hago una comparación superficial utilizando del código enviado al correo.
         if (ctx.wizard.state.data.code != ctx.wizard.state.data.temporalPass) {
             await ctx.reply('El codigo ingresado no es valido, intenta loguearte mas tarde.');
             return ctx.scene.leave();
@@ -112,7 +114,7 @@ ${ctx.wizard.state.data.grades.join(' \n')}
             // Agrego sus modulos y notas a las variables correspondidas.
             for (let i = 0; i < ctx.wizard.state.data.userGrade.length; i++) {
                 ctx.wizard.state.data.grades.push(`✯ Módulo ${ctx.wizard.state.data.userGrade[i].module}, calificación: ${ctx.wizard.state.data.userGrade[i].grade}/20`);
-                ctx.wizard.state.data.grade += (ctx.wizard.state.data.userGrade[i].grade);
+                ctx.wizard.state.data.grade += ctx.wizard.state.data.userGrade[i].grade;
             }
             await ctx.replyWithHTML(`
             Bienvenido <b>${ctx.wizard.state.data.user.name}</b> 👋
