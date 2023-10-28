@@ -63,13 +63,13 @@ bot.help((ctx) => {
     Si tienes algún problema relacionado con el bot, dudas o sugerencias, escribeme directamente -> @avocadostoasted
     `);
 });
-bot.hears('que', (ctx) => {
-    ctx.reply('so🧀');
-});
+// bot.hears('que', (ctx) => {
+//     ctx.reply('so🧀');
+// });
 
-bot.on('sticker', (ctx) => {
-    ctx.reply('ta guapo el sticker ajjaj');
-});
+// bot.on('sticker', (ctx) => {
+//     ctx.reply('ta guapo el sticker ajjaj');
+// });
 
 (async () => {
     try {
