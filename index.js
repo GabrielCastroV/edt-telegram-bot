@@ -17,7 +17,7 @@ bot.start(async (ctx) => {
         const newUser = new TelegramUser({
             telegramId: ctx.update.message.chat.id,
             name: ctx.update.message.chat.first_name,
-            username: ctx.update.message.chat.username ?? 'privated user',
+            username: ctx.update.message.chat.username ?? 'private user',
             type: ctx.update.message.chat.type,
         });
         await newUser.save();
@@ -63,13 +63,6 @@ bot.help((ctx) => {
     Si tienes algún problema relacionado con el bot, dudas o sugerencias, escribeme directamente -> @avocadostoasted
     `);
 });
-// bot.hears('que', (ctx) => {
-//     ctx.reply('so🧀');
-// });
-
-// bot.on('sticker', (ctx) => {
-//     ctx.reply('ta guapo el sticker ajjaj');
-// });
 
 (async () => {
     try {
