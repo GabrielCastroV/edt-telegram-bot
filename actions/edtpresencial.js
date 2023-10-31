@@ -1,6 +1,8 @@
 const { Telegraf } = require('telegraf');
 require('dotenv').config();
 const { signUp, middleware } = require('./pagos.js');
+const { getDollarPrices } = require('venecodollar');
+
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
@@ -137,6 +139,58 @@ const schedules = async (ctx, volver) => {
     }
 };
 
+// Payment Method.
+
+const paymentMethod = async (ctx, inscribirse, debit, pago_movil, volver) => {
+    const info = 'Selecciona un método de pago';
+    try {
+        await ctx.deleteMessage();
+        await ctx.reply(info,
+            {
+                reply_markup: {
+                    inline_keyboard: [
+                        [{ text: 'Tarjeta de Crédito 💳', callback_data: inscribirse }, { text: 'Pago Móvil 📲', callback_data: pago_movil }],
+                        [{ text: '< Volver', callback_data: volver }, { text: 'Transferencia 🏦', callback_data: debit }],
+                    ],
+                },
+            });
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+// Debit / Pago Movil method.
+
+const pagoMovil = async (ctx, signature, amount) => {
+    ctx.deleteMessage();
+    await ctx.reply('cargando...');
+    try {
+        const res = await getDollarPrices();
+        const BCV = res[5].dollar;
+        const info = `
+        Pago Móvil
+    
+        CI: V-12.345.678
+        Banesco
+        0412-123456789
+    
+        Transferencia:
+    
+        4242-4242-4242-4242
+        Banesco
+        Rif: 123456789
+    
+        ${signature} 
+
+        Total a pagar: ${(amount * BCV).toFixed(2)} bs
+        
+        `;
+        await ctx.reply(info);
+    } catch (error) {
+        console.log(error);
+    }
+
+};
 
 // Programación
 
@@ -154,7 +208,7 @@ Nuestro objetivo es desarrollar y ayudar a profesionales que puedan trabajar en 
     
 (⏳ Duración: 6 Meses)
 `;
-    menuPresencial(ctx, info, 'plan_de_estudios_pr', 'como_funciona_pr', 'costo_matricula_pr', 'horarios_pr', 'volver_edt_presencial', 'inscribir_pr');
+    menuPresencial(ctx, info, 'plan_de_estudios_pr', 'como_funciona_pr', 'costo_matricula_pr', 'horarios_pr', 'volver_edt_presencial', 'metodo_pago_pr');
 });
 bot.action('plan_de_estudios_pr', async (ctx) => {
     const info = `
@@ -194,6 +248,16 @@ bot.action('costo_matricula_pr', async (ctx) => {
 bot.action('horarios_pr', async (ctx) => {
     schedules(ctx, 'volver_edt_presencial_pr');
 });
+bot.action('metodo_pago_pr', async (ctx) => {
+    paymentMethod(ctx, 'inscribir_pr', 'debit_pr', 'pago_movil_pr', 'volver_edt_presencial_pr');
+});
+bot.action('pago_movil_pr', async (ctx) => {
+    pagoMovil(ctx, 'Programación Full Stack 🚀', 130);
+});
+bot.action('debit_pr', async (ctx) => {
+    await pagoMovil(ctx, 'Programación Full Stack 🚀', 130);
+    await 
+});
 bot.action('inscribir_pr', async (ctx) => {
     signUp(ctx, 'Programación Full Stack 🚀', 13000, 'https://i.imgur.com/hvnITG8.jpg');
 });
@@ -211,7 +275,7 @@ Nuestro objetivo es desarrollar y ayudar a profesionales que puedan trabajar en 
 
 (⏳ Duración: 6 Meses)
     `;
-    menuPresencial(ctx, info, 'plan_de_estudios_pr', 'como_funciona_pr', 'costo_matricula_pr', 'horarios_pr', 'volver_edt_presencial', 'inscribir_pr');
+    menuPresencial(ctx, info, 'plan_de_estudios_pr', 'como_funciona_pr', 'costo_matricula_pr', 'horarios_pr', 'volver_edt_presencial', 'metodo_pago_pr');
 });
 
 // Diseño digital

@@ -1,11 +1,11 @@
-const { Telegraf } = require('telegraf');
 const nodemailer = require('nodemailer');
-
+const { Telegraf } = require('telegraf');
 require('dotenv').config();
+
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
-// inscribirse/pagar (funcion)
+// inscribirse/pagar (funcion) Credit Card Method
 
 const signUp = async (ctx, signature, amount, photo_url) => {
     try {
@@ -156,6 +156,9 @@ bot.on('successful_payment', async (ctx) => {
         console.log(error);
     }
 });
+
+// inscribirse/pagar (funcion) Debit Card Method
+
 
 module.exports = {
     signUp: signUp,

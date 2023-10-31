@@ -4,7 +4,7 @@ require('dotenv').config();
 const commandCourses = require('./commands/courses');
 const commandLocation = require('./commands/location');
 const commandFaq = require('./commands/faq');
-const login = require('./login/login');
+const login = require('./scenes/scene');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 

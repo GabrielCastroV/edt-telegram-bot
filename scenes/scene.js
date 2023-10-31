@@ -6,11 +6,11 @@ const Course = require('../models/courses');
 const Grades = require('../models/grades');
 require('dotenv').config();
 
-// Creo la wizard scene
+// Login Wizard Scene
 const login = new WizardScene(
     'my-login',
     async ctx => {
-        ctx.reply('Por favor ingresa tu email:');
+        await ctx.reply('Por favor ingresa tu email:');
         // Abro un espacio en memoria como objeto para posteriormente guardar el email.
         ctx.wizard.state.data = {};
         // Paso a la siguiente escena.
@@ -103,7 +103,7 @@ ${ctx.wizard.state.data.grades.join(' \n')}
     },
     async ctx => {
         ctx.wizard.state.data.code = ctx.message?.text;
-        // Hago una comparación superficial utilizando del código enviado al correo.
+        // Hago una comparación superficial utilizando el código enviado al correo.
         if (ctx.wizard.state.data.code != ctx.wizard.state.data.temporalPass) {
             await ctx.reply('El codigo ingresado no es valido, intenta loguearte mas tarde.');
             return ctx.scene.leave();
@@ -140,7 +140,64 @@ ${ctx.wizard.state.data.grades.join(' \n')}
 
     },
 );
-const stage = new Stage([login]);
+
+// Pago movil/Transferencia Wizard Scene
+const pago_movil = new WizardScene(
+    'my-pago-movil',
+    async ctx => {
+        await ctx.reply('Por favor ingresa tu email:');
+        // Abro un espacio en memoria como objeto para posteriormente guardar el email.
+        ctx.wizard.state.data = {};
+        // Paso a la siguiente escena.
+        return ctx.wizard.next();
+    },
+    async ctx => {
+        // Aqui guardo el email del mensaje del usuario.
+        ctx.wizard.state.data.email = ctx.message?.text;
+        // Compruebo con expresion regular si verdaderamente es un email y no cualquier otro texto
+        const EMAILREGEX = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+        const emailValidation = EMAILREGEX.test(ctx.wizard.state.data.email);
+        // De no ser un email, cierro la escena.
+        if (!emailValidation) {
+            await ctx.reply('Email inválido 👎');
+            // Salgo de la escena
+            return ctx.scene.leave();
+        }
+        await ctx.reply('Ingresa los cuatro últimos dígitos de la operación. Ejemplo: 8442');
+        return ctx.wizard.next();
+    },
+    async ctx => {
+        // Guardo el número de referencia.
+        ctx.wizard.state.data.ref = ctx.message?.text;
+        const REFREGEX = /^\d{4}$/;
+        const refValidation = REFREGEX.test(ctx.wizard.state.data.ref);
+        if (!refValidation) {
+            await ctx.reply('Número de operación invalida, deben ser unicamente 4 dígitos. No uses hashtags (#), puntos (.) o comas (,)');
+            return ctx.scene.leave();
+        }
+        await ctx.replyWithHTML(`Escribe el monto que transferiste. Ejemplo: 2300
+
+En caso de tener decimal, utilice un punto (.) para separar. Ejemplo: 2300.50`);
+        // Paso a la siguiente escena.
+        return ctx.wizard.next();
+    },
+    async ctx => {
+        // Guardo el monto
+        ctx.wizard.state.data.amount = ctx.message?.text;
+        const AMOUNTREGEX = /^\d+(\.\d{1,2})?/;
+        const amountValidation = AMOUNTREGEX.test(ctx.wizard.state.data.amount);
+        if (!amountValidation) {
+            await ctx.reply('Monto inválido, el formato debe ser solo números. En caso de tener cifras decimales, deben ser separadas con un punto (.) recuerda que solo son 2 cifras después del punto.');
+            return ctx.scene.leave();
+        }
+        // Cierro la escena
+        await ctx.reply('Procesando el pago, nos comunicaremos con usted mediante correo electrónico. Bienvenido a EDTécnica.');
+        return ctx.scene.leave();
+    },
+);
+
+
+const stage = new Stage([login, pago_movil]);
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
 (async () => {
@@ -157,5 +214,8 @@ bot.use(session());
 bot.use(stage.middleware());
 bot.command('login', ctx => {
     ctx.scene.enter('my-login');
+});
+bot.command('pagar', ctx => {
+    ctx.scene.enter('my-pago-movil');
 });
 module.exports = bot.middleware();
