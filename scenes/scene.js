@@ -142,7 +142,7 @@ ${ctx.wizard.state.data.grades.join(' \n')}
 );
 
 // Pago movil/Transferencia Wizard Scene
-const pago_movil = new WizardScene(
+const pagoMovilScene = new WizardScene(
     'my-pago-movil',
     async ctx => {
         await ctx.reply('Por favor ingresa tu email:');
@@ -172,7 +172,7 @@ const pago_movil = new WizardScene(
         const REFREGEX = /^\d{4}$/;
         const refValidation = REFREGEX.test(ctx.wizard.state.data.ref);
         if (!refValidation) {
-            await ctx.reply('Número de operación invalida, deben ser unicamente 4 dígitos. No uses hashtags (#), puntos (.) o comas (,)');
+            await ctx.reply('Número de operación inválida, deben ser unicamente 4 dígitos. No uses hashtags (#), puntos (.) o comas (,)');
             return ctx.scene.leave();
         }
         await ctx.replyWithHTML(`Escribe el monto que transferiste. Ejemplo: 2300
@@ -192,12 +192,13 @@ En caso de tener decimal, utilice un punto (.) para separar. Ejemplo: 2300.50`);
         }
         // Cierro la escena
         await ctx.reply('Procesando el pago, nos comunicaremos con usted mediante correo electrónico. Bienvenido a EDTécnica.');
+        await ctx.replyWithSticker('CAACAgIAAxkBAAEnVVNlQte8iIu2ghPlUKGDcg0NmUOyyQACLgEAAvcCyA89lj6kwiWnGjME');
         return ctx.scene.leave();
     },
 );
 
 
-const stage = new Stage([login, pago_movil]);
+const stage = new Stage([login, pagoMovilScene]);
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
 (async () => {
@@ -215,7 +216,8 @@ bot.use(stage.middleware());
 bot.command('login', ctx => {
     ctx.scene.enter('my-login');
 });
-bot.command('pagar', ctx => {
+bot.action('hacerPago', (ctx) => {
     ctx.scene.enter('my-pago-movil');
 });
+
 module.exports = bot.middleware();
