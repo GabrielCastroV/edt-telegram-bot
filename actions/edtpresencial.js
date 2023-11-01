@@ -296,7 +296,7 @@ Esta carrera técnica tiene aval universitario y además tenemos un programa de 
 
 (⏳ Duración: 6 Meses)
     `;
-    menuPresencial(ctx, info, 'plan_de_estudios_dd', 'como_funciona_dd', 'costo_matricula_dd', 'horarios_dd', 'volver_edt_presencial', 'inscribir_dd');
+    menuPresencial(ctx, info, 'plan_de_estudios_dd', 'como_funciona_dd', 'costo_matricula_dd', 'horarios_dd', 'volver_edt_presencial', 'metodo_pago_dd');
 });
 bot.action('plan_de_estudios_dd', async (ctx) => {
     const info = `
@@ -337,6 +337,12 @@ bot.action('costo_matricula_dd', async (ctx) => {
 bot.action('horarios_dd', async (ctx) => {
     schedules(ctx, 'volver_edt_presencial_dd');
 });
+bot.action('metodo_pago_dd', async (ctx) => {
+    paymentMethod(ctx, 'inscribir_dd', 'pago_movil_dd', 'volver_edt_presencial_dd');
+});
+bot.action('pago_movil_dd', async (ctx) => {
+    pagoMovil(ctx, 'Diseño Digital 🎨', 130);
+});
 bot.action('inscribir_dd', async (ctx) => {
     signUp(ctx, 'Diseño Digital', 13000, 'https://i.imgur.com/HtX2Dfc.jpg');
 });
@@ -356,7 +362,7 @@ Esta carrera técnica tiene aval universitario y además tenemos un programa de 
 
 (⏳ Duración: 6 Meses)
     `;
-    menuPresencial(ctx, info, 'plan_de_estudios_dd', 'como_funciona_dd', 'costo_matricula_dd', 'horarios_dd', 'volver_edt_presencial', 'inscribir_dd');
+    menuPresencial(ctx, info, 'plan_de_estudios_dd', 'como_funciona_dd', 'costo_matricula_dd', 'horarios_dd', 'volver_edt_presencial', 'metodo_pago_dd');
 });
 
 // Marketing y Redes Sociales
