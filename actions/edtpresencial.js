@@ -186,7 +186,7 @@ Total a pagar: ${(amount * BCV).toFixed(2)} Bs.
             {
                 reply_markup: {
                     inline_keyboard: [
-                        [{ text: 'Confirmar pago', callback_data: 'hacerPago' }],
+                        [{ text: 'Confirmar pago ✅', callback_data: 'hacerPago' }],
                     ],
                 },
             });

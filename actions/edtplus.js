@@ -1,6 +1,7 @@
 const { Telegraf } = require('telegraf');
 require('dotenv').config();
 const { signUp, middleware } = require('./pagos.js');
+const { getDollarPrices } = require('venecodollar');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
@@ -39,6 +40,64 @@ const menuPlus = async (ctx, info, plan, funciona, costo, horarios, volver, insc
                 ],
             },
         });
+};
+
+// Payment Method.
+
+const paymentMethod = async (ctx, inscribirse, pago_movil, volver) => {
+    const info = 'Selecciona un método de pago';
+    try {
+        await ctx.deleteMessage();
+        await ctx.reply(info,
+            {
+                reply_markup: {
+                    inline_keyboard: [
+                        [{ text: 'Tarjeta de Crédito 💳', callback_data: inscribirse }, { text: 'Pago Móvil / Transferencia🏦', callback_data: pago_movil }],
+                        [{ text: '< Volver', callback_data: volver }],
+                    ],
+                },
+            });
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+// Debit / Pago Movil method.
+
+const pagoMovil = async (ctx, signature, amount) => {
+    try {
+        await ctx.deleteMessage();
+        const res = await getDollarPrices();
+        const BCV = res[5].dollar;
+        const info = `
+                Pago Móvil
+
+CI: V-12.345.678
+Banesco
+0412-123456789
+
+Transferencia:
+4242-4242-4242-4242
+Banesco
+Rif: 123456789
+
+${signature} (inscripción)
+
+Total a pagar: ${(amount * BCV).toFixed(2)} Bs.
+
+                `;
+        await ctx.reply(info,
+            {
+                reply_markup: {
+                    inline_keyboard: [
+                        [{ text: 'Confirmar pago ✅', callback_data: 'hacerPago' }],
+                    ],
+                },
+            });
+
+    } catch (error) {
+        console.log(error);
+    }
 };
 
 // Schedules and Info. (funcion)
@@ -84,7 +143,7 @@ bot.action('robotica_plus', async (ctx) => {
     
     Te ayuda a aprender habilidades de alta demanda profesional que te ayudaran a tu desarrollo laboral en el futuro.
 `;
-    menuPlus(ctx, info, 'plan_de_estudios_ro', 'como_funciona_ro', 'costo_matricula_ro', 'horarios_ro', 'volver_edt_plus_cursos', 'inscribir_ro');
+    menuPlus(ctx, info, 'plan_de_estudios_ro', 'como_funciona_ro', 'costo_matricula_ro', 'horarios_ro', 'volver_edt_plus_cursos', 'metodo_pago_ro');
 });
 bot.action('plan_de_estudios_ro', async (ctx) => {
     try {
@@ -162,6 +221,12 @@ bot.action('costo_matricula_ro', async (ctx) => {
 bot.action('horarios_ro', async (ctx) => {
     schedulesPlus(ctx, 'volver_edt_plus');
 });
+bot.action('metodo_pago_ro', async (ctx) => {
+    paymentMethod(ctx, 'inscribir_ro', 'pago_movil_ro', 'volver_edt_presencial_ro');
+});
+bot.action('pago_movil_ro', async (ctx) => {
+    pagoMovil(ctx, 'Robótica 🤖', 100);
+});
 bot.action('inscribir_ro', async (ctx) => {
     signUp(ctx, 'Robótica EDT Plus 🤖', 10000, 'https://i.imgur.com/mdpWirS.jpg');
 });
@@ -179,7 +244,7 @@ bot.action('volver_edt_plus', async (ctx) => {
     
     Te ayuda a aprender habilidades de alta demanda profesional que te ayudaran a tu desarrollo laboral en el futuro.
 `;
-    menuPlus(ctx, info, 'plan_de_estudios_ro', 'como_funciona_ro', 'costo_matricula_ro', 'horarios_ro', 'volver_edt_plus_cursos', 'inscribir_ro');
+    menuPlus(ctx, info, 'plan_de_estudios_ro', 'como_funciona_ro', 'costo_matricula_ro', 'horarios_ro', 'volver_edt_plus_cursos', 'metodo_pago_ro');
 });
 
 // Volver menu de EDT plus cursos
