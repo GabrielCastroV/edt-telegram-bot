@@ -480,7 +480,7 @@ Crear tu primera sesión de fotos artística y tu primer trabajo documental.
 
 (⏳ Duración: 4 Meses)
     `;
-    menuPresencial(ctx, info, 'plan_de_estudios_f', 'como_funciona_f', 'costo_matricula_f', 'horarios_f', 'volver_edt_presencial', 'inscribir_f');
+    menuPresencial(ctx, info, 'plan_de_estudios_f', 'como_funciona_f', 'costo_matricula_f', 'horarios_f', 'volver_edt_presencial', 'metodo_pago_f');
 });
 bot.action('plan_de_estudios_f', async (ctx) => {
     const info = `
@@ -513,6 +513,12 @@ bot.action('costo_matricula_f', async (ctx) => {
 bot.action('horarios_f', async (ctx) => {
     schedules(ctx, 'volver_edt_presencial_f');
 });
+bot.action('metodo_pago_f', async (ctx) => {
+    paymentMethod(ctx, 'inscribir_f', 'pago_movil_f', 'volver_edt_presencial_f');
+});
+bot.action('pago_movil_f', async (ctx) => {
+    pagoMovil(ctx, 'Fotografía 📷', 120);
+});
 bot.action('inscribir_f', async (ctx) => {
     signUp(ctx, 'Fotografía', 12000, 'https://i.imgur.com/lmeAW1r.jpg');
 });
@@ -536,7 +542,7 @@ bot.action('volver_edt_presencial_f', async (ctx) => {
     
     (⏳ Duración: 4 Meses)
     `;
-    menuPresencial(ctx, info, 'plan_de_estudios_f', 'como_funciona_f', 'costo_matricula_f', 'horarios_f', 'volver_edt_presencial', 'inscribir_f');
+    menuPresencial(ctx, info, 'plan_de_estudios_f', 'como_funciona_f', 'costo_matricula_f', 'horarios_f', 'volver_edt_presencial', 'metodo_pago_f');
 });
 
 // Volver a los cursos presenciales
