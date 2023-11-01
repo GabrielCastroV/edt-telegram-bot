@@ -383,7 +383,7 @@ Una carrera con aval universitario y programa de pasantía, te dejo esto como no
 
 (⏳ Duración: 6 Meses)
     `;
-    menuPresencial(ctx, info, 'plan_de_estudios_mr', 'como_funciona_mr', 'costo_matricula_mr', 'horarios_mr', 'volver_edt_presencial', 'inscribir_mr');
+    menuPresencial(ctx, info, 'plan_de_estudios_mr', 'como_funciona_mr', 'costo_matricula_mr', 'horarios_mr', 'volver_edt_presencial', 'metodo_pago_mr');
 });
 bot.action('plan_de_estudios_mr', async (ctx) => {
     const info = `
@@ -430,6 +430,12 @@ bot.action('costo_matricula_mr', async (ctx) => {
 bot.action('horarios_mr', async (ctx) => {
     schedules(ctx, 'volver_edt_presencial_mr');
 });
+bot.action('metodo_pago_mr', async (ctx) => {
+    paymentMethod(ctx, 'inscribir_mr', 'pago_movil_mr', 'volver_edt_presencial_mr');
+});
+bot.action('pago_movil_mr', async (ctx) => {
+    pagoMovil(ctx, 'Marketing y Redes Sociales 📈', 110);
+});
 bot.action('inscribir_mr', async (ctx) => {
     signUp(ctx, 'Marketing y Redes Sociales', 11000, 'https://i.imgur.com/waOlFNb.jpg');
 });
@@ -449,7 +455,7 @@ Una carrera con aval universitario y programa de pasantía, te dejo esto como no
 
 (⏳ Duración: 6 Meses)
     `;
-    menuPresencial(ctx, info, 'plan_de_estudios_mr', 'como_funciona_mr', 'costo_matricula_mr', 'horarios_mr', 'volver_edt_presencial', 'inscribir_mr');
+    menuPresencial(ctx, info, 'plan_de_estudios_mr', 'como_funciona_mr', 'costo_matricula_mr', 'horarios_mr', 'volver_edt_presencial', 'metodo_pago_mr');
 });
 
 // Fotografia
