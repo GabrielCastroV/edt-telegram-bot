@@ -50,7 +50,7 @@ const login = new WizardScene(
             // Creamos un número aleatorio de 6 dígitos que será su clave temporal para iniciar sesión.
             const temporalPass = Math.floor(Math.random() * 900000) + 100000;
             ctx.wizard.state.data.temporalPass = temporalPass;
-            // De no estar verificado, le enviamos un correo con su clave temporal.
+            // Al no estar verificado, le enviamos un correo con su clave temporal.
             try {
                 const transporter = nodemailer.createTransport({
                     host: 'smtp.gmail.com',
@@ -95,7 +95,7 @@ ${ctx.wizard.state.data.grades.join(' \n')}
 📝 Nota final hasta ahora: ${(ctx.wizard.state.data.grade / ctx.wizard.state.data.userCourse.modules).toFixed(0)}
             
 🗓️ Próximo pago: ${ctx.wizard.state.data.user.payday.toLocaleDateString()}
-💲 Monto de mensualidad: ${ctx.wizard.state.data.userCourse.price}$
+💲 Monto de mensualidad: ${ctx.wizard.state.data.userCourse.module_price}$
 `);
             return ctx.scene.leave();
         }
@@ -133,7 +133,7 @@ ${ctx.wizard.state.data.grades.join(' \n')}
 📝 Nota final hasta ahora: ${(ctx.wizard.state.data.grade / ctx.wizard.state.data.userCourse.modules).toFixed(0)}
             
 🗓️ Próximo pago: ${ctx.wizard.state.data.user.payday.toLocaleDateString()}
-💲 Monto de mensualidad: ${ctx.wizard.state.data.userCourse.price}$
+💲 Monto de mensualidad: ${ctx.wizard.state.data.userCourse.module_price}$
 `);
             return ctx.scene.leave();
         }
