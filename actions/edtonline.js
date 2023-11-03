@@ -1,6 +1,8 @@
 const { Telegraf } = require('telegraf');
 require('dotenv').config();
 const { signUp, middleware } = require('./pagos.js');
+const { getDollarPrices } = require('venecodollar');
+
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
@@ -93,6 +95,63 @@ const costoMatriculaOnline = async (ctx, info, volver) => {
             },
         });
 };
+// Payment Method.
+
+const paymentMethod = async (ctx, inscribirse, pago_movil, volver) => {
+    const info = 'Selecciona un método de pago';
+    try {
+        await ctx.deleteMessage();
+        await ctx.reply(info,
+            {
+                reply_markup: {
+                    inline_keyboard: [
+                        [{ text: 'Tarjeta de Crédito 💳', callback_data: inscribirse }, { text: 'Pago Móvil / Transferencia🏦', callback_data: pago_movil }],
+                        [{ text: '< Volver', callback_data: volver }],
+                    ],
+                },
+            });
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+// Debit / Pago Movil method.
+
+const pagoMovil = async (ctx, signature, amount) => {
+    try {
+        await ctx.deleteMessage();
+        const res = await getDollarPrices();
+        const BCV = res[5].dollar;
+        const info = `
+                Pago Móvil
+
+CI: V-12.345.678
+Banesco
+0412-123456789
+
+Transferencia:
+4242-4242-4242-4242
+Banesco
+Rif: 123456789
+
+${signature} (inscripción)
+
+Total a pagar: ${(amount * BCV).toFixed(2)} Bs.
+
+                `;
+        await ctx.reply(info,
+            {
+                reply_markup: {
+                    inline_keyboard: [
+                        [{ text: 'Confirmar pago ✅', callback_data: 'hacerPago' }],
+                    ],
+                },
+            });
+
+    } catch (error) {
+        console.log(error);
+    }
+};
 
 // Schedules and Info. (funcion)
 
@@ -137,7 +196,7 @@ Nuestro objetivo es desarrollar y ayudar a profesionales que puedan trabajar en 
     
 (⏳ Duración: 6 Meses)
 `;
-    menuOnline(ctx, info, 'plan_de_estudios_pr_on', 'como_funciona_pr_on', 'costo_matricula_pr_on', 'horarios_pr_on', 'volver_edt_online', 'inscribir_pr_on');
+    menuOnline(ctx, info, 'plan_de_estudios_pr_on', 'como_funciona_pr_on', 'costo_matricula_pr_on', 'horarios_pr_on', 'volver_edt_online', 'metodo_pago_pr_on');
 });
 bot.action('plan_de_estudios_pr_on', async (ctx) => {
     const info = `
@@ -179,6 +238,12 @@ bot.action('costo_matricula_pr_on', async (ctx) => {
 bot.action('horarios_pr_on', async (ctx) => {
     schedulesOnline(ctx, 'volver_edt_online_pr');
 });
+bot.action('metodo_pago_pr_on', async (ctx) => {
+    paymentMethod(ctx, 'inscribir_pr_on', 'pago_movil_pr_on', 'volver_edt_online_pr');
+});
+bot.action('pago_movil_pr_on', async (ctx) => {
+    pagoMovil(ctx, 'Programación Full Stack Online 🚀', 100);
+});
 bot.action('inscribir_pr_on', async (ctx) => {
     signUp(ctx, 'Programación Full Stack Online 🚀', 10000, 'https://i.imgur.com/hvnITG8.jpg');
 });
@@ -196,7 +261,7 @@ bot.action('volver_edt_online_pr', async (ctx) => {
     
     (⏳ Duración: 6 Meses)
     `;
-    menuOnline(ctx, info, 'plan_de_estudios_pr_on', 'como_funciona_pr_on', 'costo_matricula_pr_on', 'horarios_pr_on', 'volver_edt_online', 'inscribir_pr_on');
+    menuOnline(ctx, info, 'plan_de_estudios_pr_on', 'como_funciona_pr_on', 'costo_matricula_pr_on', 'horarios_pr_on', 'volver_edt_online', 'metodo_pago_pr_on');
 });
 
 // Marketing y Redes Sociales
@@ -217,7 +282,7 @@ Una carrera con aval universitario y programa de pasantía, te dejo esto como no
 
 (⏳ Duración: 6 Meses)
     `;
-    menuOnline(ctx, info, 'plan_de_estudios_mr_on', 'como_funciona_mr_on', 'costo_matricula_mr_on', 'horarios_mr_on', 'volver_edt_online', 'inscribir_mr_on');
+    menuOnline(ctx, info, 'plan_de_estudios_mr_on', 'como_funciona_mr_on', 'costo_matricula_mr_on', 'horarios_mr_on', 'volver_edt_online', 'metodo_pago_mr_on');
 });
 bot.action('plan_de_estudios_mr_on', async (ctx) => {
     const info = `
@@ -264,6 +329,12 @@ bot.action('costo_matricula_mr_on', async (ctx) => {
 bot.action('horarios_mr_on', async (ctx) => {
     schedulesOnline(ctx, 'volver_edt_online_mr');
 });
+bot.action('metodo_pago_mr_on', async (ctx) => {
+    paymentMethod(ctx, 'inscribir_mr_on', 'pago_movil_mr_on', 'volver_edt_online_mr');
+});
+bot.action('pago_movil_mr_on', async (ctx) => {
+    pagoMovil(ctx, 'Marketing y Redes Sociales Online 📈', 100);
+});
 bot.action('inscribir_mr_on', async (ctx) => {
     signUp(ctx, 'Marketing y Redes Sociales Online', 10000, 'https://i.imgur.com/34YMyWK.jpg');
 });
@@ -283,7 +354,7 @@ Una carrera con aval universitario y programa de pasantía, te dejo esto como no
 
 (⏳ Duración: 6 Meses)
     `;
-    menuOnline(ctx, info, 'plan_de_estudios_mr_on', 'como_funciona_mr_on', 'costo_matricula_mr_on', 'horarios_mr_on', 'volver_edt_online', 'inscribir_mr_on');
+    menuOnline(ctx, info, 'plan_de_estudios_mr_on', 'como_funciona_mr_on', 'costo_matricula_mr_on', 'horarios_mr_on', 'volver_edt_online', 'metodo_pago_mr_on');
 });
 
 // Volver a los cursos online

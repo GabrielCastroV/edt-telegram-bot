@@ -222,7 +222,7 @@ bot.action('horarios_ro', async (ctx) => {
     schedulesPlus(ctx, 'volver_edt_plus');
 });
 bot.action('metodo_pago_ro', async (ctx) => {
-    paymentMethod(ctx, 'inscribir_ro', 'pago_movil_ro', 'volver_edt_presencial_ro');
+    paymentMethod(ctx, 'inscribir_ro', 'pago_movil_ro', 'volver_edt_plus');
 });
 bot.action('pago_movil_ro', async (ctx) => {
     pagoMovil(ctx, 'Robótica 🤖', 100);
