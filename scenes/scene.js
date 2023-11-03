@@ -78,7 +78,7 @@ const login = new WizardScene(
                 ctx.wizard.state.data.grades.push(`✯ Módulo ${ctx.wizard.state.data.userGrade[i].module}, calificación: ${ctx.wizard.state.data.userGrade[i].grade}/20`);
                 ctx.wizard.state.data.grade += ctx.wizard.state.data.userGrade[i].grade;
             }
-            await ctx.replyWithHTML(`
+            const info = (`
             Bienvenido <b>${ctx.wizard.state.data.user.name}</b> 👋
             
 <u>Información del Estudiante: </u>
@@ -97,6 +97,16 @@ ${ctx.wizard.state.data.grades.join(' \n')}
 🗓️ Próximo pago: ${ctx.wizard.state.data.user.payday.toLocaleDateString()}
 💲 Monto de mensualidad: ${ctx.wizard.state.data.userCourse.module_price}$
 `);
+            await ctx.replyWithHTML(info,
+                {
+                    reply_markup: {
+                        inline_keyboard: [
+                            [{ text: 'Cerrar sesión 🔒', callback_data: 'cerrar_sesion' }, { text: 'Pagar módulo 💸', callback_data: 'pagar_modulo' }],
+                        ],
+                    },
+                },
+            );
+
             return ctx.scene.leave();
         }
         return ctx.wizard.next();
@@ -116,7 +126,7 @@ ${ctx.wizard.state.data.grades.join(' \n')}
                 ctx.wizard.state.data.grades.push(`✯ Módulo ${ctx.wizard.state.data.userGrade[i].module}, calificación: ${ctx.wizard.state.data.userGrade[i].grade}/20`);
                 ctx.wizard.state.data.grade += ctx.wizard.state.data.userGrade[i].grade;
             }
-            await ctx.replyWithHTML(`
+            const info = (`
             Bienvenido <b>${ctx.wizard.state.data.user.name}</b> 👋
             
 <u>Información del Estudiante: </u>
@@ -135,9 +145,56 @@ ${ctx.wizard.state.data.grades.join(' \n')}
 🗓️ Próximo pago: ${ctx.wizard.state.data.user.payday.toLocaleDateString()}
 💲 Monto de mensualidad: ${ctx.wizard.state.data.userCourse.module_price}$
 `);
+            await ctx.replyWithHTML(info,
+                {
+                    reply_markup: {
+                        inline_keyboard: [
+                            [{ text: 'Cerrar sesión 🔒', callback_data: 'cerrar_sesion' }, { text: 'Pagar módulo 💸', callback_data: 'pagar_modulo' }],
+                        ],
+                    },
+                },
+            );
             return ctx.scene.leave();
         }
 
+    },
+);
+// Pago movil/Transferencia Wizard Scene
+const logout = new WizardScene(
+    'my-logout',
+    async ctx => {
+        await ctx.reply('Para cerrar sesión, ingresa tu email:');
+        // Abro un espacio en memoria como objeto para posteriormente guardar el email.
+        ctx.wizard.state.data = {};
+        // Paso a la siguiente escena.
+        return ctx.wizard.next();
+    },
+    async ctx => {
+        // Aqui guardo el email del mensaje del usuario.
+        ctx.wizard.state.data.email = ctx.message?.text;
+        // Compruebo con expresion regular si verdaderamente es un email y no cualquier otro texto
+        const EMAILREGEX = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+        const emailValidation = EMAILREGEX.test(ctx.wizard.state.data.email);
+        // De no ser un email, cierro la escena.
+        if (!emailValidation) {
+            await ctx.replyWithSticker('CAACAgIAAxkBAAEnY_5lRX_tdZ_8vOi0_QwTrR49yxn5wwACAQIAAhZCawotBlJ7kvEiDDME');
+            await ctx.reply('Eso ni siquiera es un email!');
+            // Salgo de la escena
+            return ctx.scene.leave();
+        }
+        const user = await User.findOne({ email: ctx.wizard.state.data.email });
+        if (!user) {
+            await ctx.replyWithSticker('CAACAgIAAxkBAAEnY_hlRX4VKhrjGmKkNJ4P4r2TMBrxqAACbQAD5KDOB4hThnKtsh0bMwQ');
+            await ctx.reply('Email no encontrado.');
+            return ctx.scene.leave();
+        } else if (user) {
+            // Busco por email y lo deslogueo. (verified false)
+            await User.findOneAndUpdate({ email: user.email }, { verified: false });
+            await ctx.replyWithSticker('CAACAgIAAxkBAAEnY_xlRX7oRcuZjGTRzJLv1QXd3VhMIwACSQIAAladvQoqlwydCFMhDjME');
+            await ctx.reply('Sesión cerrada.');
+            return ctx.scene.leave();
+        }
+        return ctx.scene.leave();
     },
 );
 
@@ -198,7 +255,7 @@ En caso de tener decimal, utilice un punto (.) para separar. Ejemplo: 2300.50`);
 );
 
 
-const stage = new Stage([login, pagoMovilScene]);
+const stage = new Stage([login, pagoMovilScene, logout]);
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
 (async () => {
@@ -219,5 +276,7 @@ bot.command('login', ctx => {
 bot.action('hacerPago', (ctx) => {
     ctx.scene.enter('my-pago-movil');
 });
-
+bot.action('cerrar_sesion', async (ctx) => {
+    ctx.scene.enter('my-logout');
+});
 module.exports = bot.middleware();
