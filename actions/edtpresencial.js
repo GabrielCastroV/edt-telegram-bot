@@ -5,8 +5,6 @@ const { getDollarPrices } = require('venecodollar');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
-const prueba = 'texto de prueba';
-
 bot.action('presencial', async (ctx) => {
     try {
         await ctx.deleteMessage();
