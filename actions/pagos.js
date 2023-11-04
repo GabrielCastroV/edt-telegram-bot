@@ -74,7 +74,6 @@ bot.on('successful_payment', async (ctx) => {
     const userData = global.userData;
     try {
         console.log(userData);
-        await ctx.reply(`Felicidades ${userData.first_name}, su pago ha sido procesado exitosamente. Por favor revisa tu correo para más información sobre su compra.`);
         await transporter.sendMail({
             from: process.env.EMAIL_USER,
             to: userData.email,
@@ -82,7 +81,7 @@ bot.on('successful_payment', async (ctx) => {
             html: `<!DOCTYPE html>
             <html lang="en">
             <head>
-                <meta charset="UTF-8">
+            <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <title>Detalles de Compra</title>
                 <style>
@@ -152,12 +151,12 @@ bot.on('successful_payment', async (ctx) => {
             </html>
             `,
         });
+        await ctx.replyWithSticker('CAACAgIAAxkBAAEnZ7JlRnVEqWj7As0G2IF0WFywM3tTUgACTwEAAiI3jgR8lZdITHG8FzME');
+        await ctx.reply(`Felicidades ${userData.first_name}, su pago ha sido procesado exitosamente. Por favor revisa tu correo para más información sobre su compra.`);
     } catch (error) {
         console.log(error);
     }
 });
-
-// inscribirse/pagar (funcion) Debit Card Method
 
 
 module.exports = {
