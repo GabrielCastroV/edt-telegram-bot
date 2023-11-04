@@ -24,7 +24,8 @@ const login = new WizardScene(
         const emailValidation = EMAILREGEX.test(ctx.wizard.state.data.email);
         // De no ser un email, cierro la escena.
         if (!emailValidation) {
-            await ctx.reply('Email inválido 👎');
+            await ctx.replyWithSticker('CAACAgIAAxkBAAEnZA5lRY2LGfawNgGmyJba0uY9eAkHwwACWQADUomRI5_hf3uttGWoMwQ');
+            await ctx.reply('Eso no es un email');
             // Salgo de la escena
             return ctx.scene.leave();
         }
@@ -44,6 +45,7 @@ const login = new WizardScene(
         ctx.wizard.state.data.grade = 0;
         if (!user) {
             // El correo no existe en la base de datos.
+            await ctx.replyWithSticker('CAACAgIAAxkBAAEnZBJlRY-oHk-8ktm0jVsC66GCva6s1wACuQ4AAmxu8Emp2F_Xn3emBjME');
             await ctx.reply('Correo no encontrado en la base de datos. Recuerda que debes estar cursando el primer módulo o superior para asignarte tu usuario de EDTécnica.');
             return ctx.scene.leave();
         } else if (!verified) {
@@ -115,12 +117,12 @@ ${ctx.wizard.state.data.grades.join(' \n')}
         ctx.wizard.state.data.code = ctx.message?.text;
         // Hago una comparación superficial utilizando el código enviado al correo.
         if (ctx.wizard.state.data.code != ctx.wizard.state.data.temporalPass) {
-            await ctx.reply('El codigo ingresado no es valido, intenta loguearte mas tarde.');
+            await ctx.replyWithSticker('CAACAgIAAxkBAAEnZBplRZBNdqpNrI74ZhhZKQobfuIfPAACTgADr8ZRGvFh67KaK5_kMwQ');
+            await ctx.reply('Alto ahi! el codigo ingresado no es válido, intenta loguearte mas tarde.');
             return ctx.scene.leave();
         } else if (ctx.wizard.state.data.code == ctx.wizard.state.data.temporalPass) {
             // Verifico al usuario pe causa.
             await User.findByIdAndUpdate(ctx.wizard.state.data.user._id, { verified: true });
-            await ctx.reply('ingresando...');
             // Agrego sus modulos y notas a las variables correspondidas.
             for (let i = 0; i < ctx.wizard.state.data.userGrade.length; i++) {
                 ctx.wizard.state.data.grades.push(`✯ Módulo ${ctx.wizard.state.data.userGrade[i].module}, calificación: ${ctx.wizard.state.data.userGrade[i].grade}/20`);
@@ -216,7 +218,8 @@ const pagoMovilScene = new WizardScene(
         const emailValidation = EMAILREGEX.test(ctx.wizard.state.data.email);
         // De no ser un email, cierro la escena.
         if (!emailValidation) {
-            await ctx.reply('Email inválido 👎');
+            await ctx.replyWithSticker('CAACAgIAAxkBAAEnZCRlRZIqkNAMnM5fFT2zNrqPnPyK5gAC3QAD5KDOB2yVwjLQclMoMwQ');
+            await ctx.reply('Eso no es un email válido');
             // Salgo de la escena
             return ctx.scene.leave();
         }
@@ -229,6 +232,7 @@ const pagoMovilScene = new WizardScene(
         const REFREGEX = /^\d{4}$/;
         const refValidation = REFREGEX.test(ctx.wizard.state.data.ref);
         if (!refValidation) {
+            await ctx.replyWithSticker('CAACAgIAAxkBAAEnZChlRZK4ZxZdQ4l6rCKuV-c2lcOmzAACLwADwZxgDK-MRHjuZdGKMwQ');
             await ctx.reply('Número de operación inválida, deben ser unicamente 4 dígitos. No uses hashtags (#), puntos (.) o comas (,)');
             return ctx.scene.leave();
         }
@@ -244,12 +248,13 @@ En caso de tener decimal, utilice un punto (.) para separar. Ejemplo: 2300.50`);
         const AMOUNTREGEX = /^\d+(\.\d{1,2})?/;
         const amountValidation = AMOUNTREGEX.test(ctx.wizard.state.data.amount);
         if (!amountValidation) {
+            await ctx.replyWithSticker('CAACAgIAAxkBAAEnZCplRZNZzhcmJvOk0fp6hjzTIgiNrgACfQAD9wLIDy7JuwrdyyJJMwQ');
             await ctx.reply('Monto inválido, el formato debe ser solo números. En caso de tener cifras decimales, deben ser separadas con un punto (.) recuerda que solo son 2 cifras después del punto.');
             return ctx.scene.leave();
         }
         // Cierro la escena
+        await ctx.replyWithSticker('CAACAgIAAxkBAAEnY_ZlRXwZCgqt4TXfusUiwb4LJ6-SWgACaAADwDZPE0z9PaPnxGmHMwQ');
         await ctx.reply('Procesando el pago, nos comunicaremos con usted mediante correo electrónico. Bienvenido a EDTécnica.');
-        await ctx.replyWithSticker('CAACAgIAAxkBAAEnVVNlQte8iIu2ghPlUKGDcg0NmUOyyQACLgEAAvcCyA89lj6kwiWnGjME');
         return ctx.scene.leave();
     },
 );
