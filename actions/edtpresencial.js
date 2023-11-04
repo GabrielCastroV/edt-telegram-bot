@@ -160,7 +160,7 @@ const paymentMethod = async (ctx, inscribirse, pago_movil, volver) => {
 
 // Debit / Pago Movil method.
 
-const pagoMovil = async (ctx, signature, amount) => {
+const pagoMovil = async (ctx, signature, amount, callback) => {
     try {
         await ctx.deleteMessage();
         const res = await getDollarPrices();
@@ -186,7 +186,7 @@ Total a pagar: ${(amount * BCV).toFixed(2)} Bs.
             {
                 reply_markup: {
                     inline_keyboard: [
-                        [{ text: 'Confirmar pago ✅', callback_data: 'hacerPago' }],
+                        [{ text: 'Confirmar pago ✅', callback_data: callback }],
                     ],
                 },
             });
@@ -256,7 +256,7 @@ bot.action('metodo_pago_pr', async (ctx) => {
     paymentMethod(ctx, 'inscribir_pr', 'pago_movil_pr', 'programacion');
 });
 bot.action('pago_movil_pr', async (ctx) => {
-    pagoMovil(ctx, 'Programación Full Stack 🚀', 130);
+    pagoMovil(ctx, 'Programación Full Stack 🚀', 130, 'hacerPago');
 });
 bot.action('inscribir_pr', async (ctx) => {
     signUp(ctx, 'Programación Full Stack 🚀', 13000, 'https://i.imgur.com/hvnITG8.jpg');
@@ -325,7 +325,7 @@ bot.action('metodo_pago_dd', async (ctx) => {
     paymentMethod(ctx, 'inscribir_dd', 'pago_movil_dd', 'diseno_digital');
 });
 bot.action('pago_movil_dd', async (ctx) => {
-    pagoMovil(ctx, 'Diseño Digital 🎨', 130);
+    pagoMovil(ctx, 'Diseño Digital 🎨', 130, 'hacerPago');
 });
 bot.action('inscribir_dd', async (ctx) => {
     signUp(ctx, 'Diseño Digital', 13000, 'https://i.imgur.com/HtX2Dfc.jpg');
@@ -400,7 +400,7 @@ bot.action('metodo_pago_mr', async (ctx) => {
     paymentMethod(ctx, 'inscribir_mr', 'pago_movil_mr', 'marketing_redes');
 });
 bot.action('pago_movil_mr', async (ctx) => {
-    pagoMovil(ctx, 'Marketing y Redes Sociales 📈', 110);
+    pagoMovil(ctx, 'Marketing y Redes Sociales 📈', 110, 'hacerPago');
 });
 bot.action('inscribir_mr', async (ctx) => {
     signUp(ctx, 'Marketing y Redes Sociales', 11000, 'https://i.imgur.com/waOlFNb.jpg');
@@ -465,7 +465,7 @@ bot.action('metodo_pago_f', async (ctx) => {
     paymentMethod(ctx, 'inscribir_f', 'pago_movil_f', 'fotografia');
 });
 bot.action('pago_movil_f', async (ctx) => {
-    pagoMovil(ctx, 'Fotografía 📷', 120);
+    pagoMovil(ctx, 'Fotografía 📷', 120, 'hacerPago');
 });
 bot.action('inscribir_f', async (ctx) => {
     signUp(ctx, 'Fotografía', 12000, 'https://i.imgur.com/lmeAW1r.jpg');

@@ -117,7 +117,7 @@ const paymentMethod = async (ctx, inscribirse, pago_movil, volver) => {
 
 // Debit / Pago Movil method.
 
-const pagoMovil = async (ctx, signature, amount) => {
+const pagoMovil = async (ctx, signature, amount, callback) => {
     try {
         await ctx.deleteMessage();
         const res = await getDollarPrices();
@@ -143,7 +143,7 @@ Total a pagar: ${(amount * BCV).toFixed(2)} Bs.
             {
                 reply_markup: {
                     inline_keyboard: [
-                        [{ text: 'Confirmar pago ✅', callback_data: 'hacerPago' }],
+                        [{ text: 'Confirmar pago ✅', callback_data: callback }],
                     ],
                 },
             });
@@ -242,7 +242,7 @@ bot.action('metodo_pago_pr_on', async (ctx) => {
     paymentMethod(ctx, 'inscribir_pr_on', 'pago_movil_pr_on', 'programacion_on');
 });
 bot.action('pago_movil_pr_on', async (ctx) => {
-    pagoMovil(ctx, 'Programación Full Stack Online 🚀', 100);
+    pagoMovil(ctx, 'Programación Full Stack Online 🚀', 100, 'hacerPago');
 });
 bot.action('inscribir_pr_on', async (ctx) => {
     signUp(ctx, 'Programación Full Stack Online 🚀', 10000, 'https://i.imgur.com/hvnITG8.jpg');
@@ -317,7 +317,7 @@ bot.action('metodo_pago_mr_on', async (ctx) => {
     paymentMethod(ctx, 'inscribir_mr_on', 'pago_movil_mr_on', 'marketing_redes_on');
 });
 bot.action('pago_movil_mr_on', async (ctx) => {
-    pagoMovil(ctx, 'Marketing y Redes Sociales Online 📈', 100);
+    pagoMovil(ctx, 'Marketing y Redes Sociales Online 📈', 100, 'hacerPago');
 });
 bot.action('inscribir_mr_on', async (ctx) => {
     signUp(ctx, 'Marketing y Redes Sociales Online', 10000, 'https://i.imgur.com/34YMyWK.jpg');

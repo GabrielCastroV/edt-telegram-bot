@@ -64,7 +64,7 @@ const paymentMethod = async (ctx, inscribirse, pago_movil, volver) => {
 
 // Debit / Pago Movil method.
 
-const pagoMovil = async (ctx, signature, amount) => {
+const pagoMovil = async (ctx, signature, amount, callback) => {
     try {
         await ctx.deleteMessage();
         const res = await getDollarPrices();
@@ -90,7 +90,7 @@ Total a pagar: ${(amount * BCV).toFixed(2)} Bs.
             {
                 reply_markup: {
                     inline_keyboard: [
-                        [{ text: 'Confirmar pago ✅', callback_data: 'hacerPago' }],
+                        [{ text: 'Confirmar pago ✅', callback_data: callback }],
                     ],
                 },
             });
@@ -225,7 +225,7 @@ bot.action('metodo_pago_ro', async (ctx) => {
     paymentMethod(ctx, 'inscribir_ro', 'pago_movil_ro', 'robotica_plus');
 });
 bot.action('pago_movil_ro', async (ctx) => {
-    pagoMovil(ctx, 'Robótica 🤖', 100);
+    pagoMovil(ctx, 'Robótica 🤖', 100, 'hacerPago');
 });
 bot.action('inscribir_ro', async (ctx) => {
     signUp(ctx, 'Robótica EDT Plus 🤖', 10000, 'https://i.imgur.com/mdpWirS.jpg');

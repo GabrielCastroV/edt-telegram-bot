@@ -4,6 +4,7 @@ const nodemailer = require('nodemailer');
 const User = require('../models/users');
 const Course = require('../models/courses');
 const Grades = require('../models/grades');
+const { getDollarPrices } = require('venecodollar');
 require('dotenv').config();
 
 // Login Wizard Scene
@@ -291,7 +292,7 @@ const pagoMovilModuleScene = new WizardScene(
         }
         if (user.module === userCourse.modules) {
             await ctx.replyWithSticker('CAACAgIAAxkBAAEnZ1tlRmA9ica7A0SjC9I5cYVu-aFKFAACMQADwZxgDMYOMqCLWnWlMwQ');
-            await ctx.reply(`Felicidades, usted ya completó sus módulos!! ${user.module}/${userCourse.modules} módulos de ${userCourse.name} `);
+            await ctx.reply(`Felicidades, usted ya completó sus módulos!! ${user.module}/${userCourse.modules} módulos de ${userCourse.name}. Estás en tu último módulo, por lo tanto no hace falta pagar nada más.`);
             return ctx.scene.leave();
         }
         await ctx.reply('Ingresa los cuatro últimos dígitos de la operación. Ejemplo: 8442');
@@ -346,6 +347,42 @@ const bot = new Telegraf(process.env.BOT_TOKEN);
 
 bot.use(session());
 bot.use(stage.middleware());
+
+const pagoMovil = async (ctx, signature, amount, callback) => {
+    try {
+        await ctx.deleteMessage();
+        const res = await getDollarPrices();
+        const BCV = res[5].dollar;
+        const info = `
+                Pago Móvil
+
+CI: V-12.345.678
+Banesco
+0412-123456789
+
+Transferencia:
+4242-4242-4242-4242
+Banesco
+Rif: 123456789
+
+${signature} (inscripción)
+
+Total a pagar: ${(amount * BCV).toFixed(2)} Bs.
+
+                `;
+        await ctx.reply(info,
+            {
+                reply_markup: {
+                    inline_keyboard: [
+                        [{ text: 'Confirmar pago ✅', callback_data: callback }],
+                    ],
+                },
+            });
+
+    } catch (error) {
+        console.log(error);
+    }
+};
 bot.command('login', ctx => {
     ctx.scene.enter('my-login');
 });
@@ -355,7 +392,10 @@ bot.action('hacerPago', (ctx) => {
 bot.action('cerrar_sesion', async (ctx) => {
     ctx.scene.enter('my-logout');
 });
-bot.command('asd', (ctx) => {
+bot.action('pagar_modulo', async (ctx) => {
+    pagoMovil(ctx, 'Programación Full Stack 🚀', 130, 'pagarModulo');
+});
+bot.action('pagarModulo', (ctx) => {
     ctx.scene.enter('my-pago-movil-module');
 });
 module.exports = bot.middleware();

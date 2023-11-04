@@ -13,16 +13,16 @@ const signUp = async (ctx, signature, amount, photo_url) => {
         const invoice = {
             title: `Curso de ${signature}`,
             description: `¡Potencia tu futuro con nuestro curso de ${signature}! Obtén la certificación que necesitas y lleva tu formación académica al siguiente nivel. Desarrolla habilidades de alto valor y alcanza tus metas educativas de manera eficaz!`,
-            payload: `${signature}`,
+            payload: signature,
             provider_token: process.env.GLOCAL_TOKEN,
             currency: 'USD',
             prices: [
                 {
-                    label: `Inscripción de ${signature}`,
-                    amount: `${amount}`,
+                    label: signature,
+                    amount: amount,
                 },
             ],
-            photo_url: `${photo_url}`,
+            photo_url: photo_url,
             need_name: true,
             need_email: true,
             need_phone_number: true,
@@ -37,6 +37,39 @@ const signUp = async (ctx, signature, amount, photo_url) => {
         console.log(error);
     }
 };
+
+// pagar modulo (funcion) Credit Card Method
+
+// const payModule = async (ctx, signature, amount, photo_url) => {
+//     try {
+//         await ctx.deleteMessage();
+//         const invoice = {
+//             title: `Curso de ${signature}`,
+//             description: `Avanza al siguiente módulo de ${signature}`,
+//             payload: signature,
+//             provider_token: process.env.GLOCAL_TOKEN,
+//             currency: 'USD',
+//             prices: [
+//                 {
+//                     label: signature,
+//                     amount: amount,
+//                 },
+//             ],
+//             photo_url: photo_url,
+//             need_name: true,
+//             need_email: true,
+//             need_phone_number: true,
+//             send_email_to_provider: true,
+//             photo_size: 4,
+//             photo_width: 512,
+//             photo_height: 512,
+//         };
+//         await ctx.sendInvoice(invoice);
+//     } catch (error) {
+//         ctx.reply(`ha ocurrido un error (${error})`);
+//         console.log(error);
+//     }
+// };
 bot.on('pre_checkout_query', async (ctx) => {
     try {
         await ctx.answerPreCheckoutQuery(true);
@@ -46,7 +79,7 @@ bot.on('pre_checkout_query', async (ctx) => {
             username: from.username ?? 'user',
             first_name: from.first_name,
             currency: currency,
-            total: (total_amount / 100),
+            total: (total_amount),
             signature: invoice_payload,
             name: order_info.name,
             email: order_info.email,
@@ -56,8 +89,8 @@ bot.on('pre_checkout_query', async (ctx) => {
         // Guardo los datos del comprador en una variable global para luego enviarle un email.
         global.userData = userData;
     } catch (error) {
-        console.log(error);
         await ctx.answerPreCheckoutQuery(false, 'La compra no pudo ser procesada.');
+        console.log(error);
     }
 });
 
@@ -161,5 +194,6 @@ bot.on('successful_payment', async (ctx) => {
 
 module.exports = {
     signUp: signUp,
+    // payModule: payModule,
     middleware: bot.middleware(),
 };
