@@ -161,7 +161,8 @@ ${ctx.wizard.state.data.grades.join(' \n')}
 
     },
 );
-// Pago movil/Transferencia Wizard Scene
+
+// Logout Wizard Scene
 const logout = new WizardScene(
     'my-logout',
     async ctx => {
@@ -259,8 +260,78 @@ En caso de tener decimal, utilice un punto (.) para separar. Ejemplo: 2300.50`);
     },
 );
 
+const pagoMovilModuleScene = new WizardScene(
+    'my-pago-movil-module',
+    async ctx => {
+        await ctx.reply('Por favor ingresa tu email de estudiante:');
+        // Abro un espacio en memoria como objeto para posteriormente guardar el email.
+        ctx.wizard.state.data = {};
+        // Paso a la siguiente escena.
+        return ctx.wizard.next();
+    },
+    async ctx => {
+        // Aqui guardo el email del mensaje del usuario.
+        ctx.wizard.state.data.email = ctx.message?.text;
+        // Compruebo con expresion regular si verdaderamente es un email y no cualquier otro texto
+        const EMAILREGEX = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+        const emailValidation = EMAILREGEX.test(ctx.wizard.state.data.email);
+        // De no ser un email, cierro la escena.
+        if (!emailValidation) {
+            await ctx.replyWithSticker('CAACAgIAAxkBAAEnZCRlRZIqkNAMnM5fFT2zNrqPnPyK5gAC3QAD5KDOB2yVwjLQclMoMwQ');
+            await ctx.reply('Eso no es un email válido');
+            // Salgo de la escena
+            return ctx.scene.leave();
+        }
+        const user = await User.findOne({ email: ctx.wizard.state.data.email });
+        const userCourse = await Course.findOne({ _id: user?.studying });
+        if (!user) {
+            await ctx.replyWithSticker('CAACAgIAAxkBAAEnZ2RlRmFO7gR28xOG39cLEeF2jg-tPAACrwADwZxgDNPvAhjBQx5TMwQ');
+            await ctx.reply('Este email no pertenece a ningún estudiante de EDTécnica.');
+            return ctx.scene.leave();
+        }
+        if (user.module === userCourse.modules) {
+            await ctx.replyWithSticker('CAACAgIAAxkBAAEnZ1tlRmA9ica7A0SjC9I5cYVu-aFKFAACMQADwZxgDMYOMqCLWnWlMwQ');
+            await ctx.reply(`Felicidades, usted ya completó sus módulos!! ${user.module}/${userCourse.modules} módulos de ${userCourse.name} `);
+            return ctx.scene.leave();
+        }
+        await ctx.reply('Ingresa los cuatro últimos dígitos de la operación. Ejemplo: 8442');
+        return ctx.wizard.next();
+    },
+    async ctx => {
+        // Guardo el número de referencia.
+        ctx.wizard.state.data.ref = ctx.message?.text;
+        const REFREGEX = /^\d{4}$/;
+        const refValidation = REFREGEX.test(ctx.wizard.state.data.ref);
+        if (!refValidation) {
+            await ctx.replyWithSticker('CAACAgIAAxkBAAEnZChlRZK4ZxZdQ4l6rCKuV-c2lcOmzAACLwADwZxgDK-MRHjuZdGKMwQ');
+            await ctx.reply('Número de operación inválida, deben ser unicamente 4 dígitos. No uses hashtags (#), puntos (.) o comas (,)');
+            return ctx.scene.leave();
+        }
+        await ctx.replyWithHTML(`Escribe el monto que transferiste. Ejemplo: 2300
 
-const stage = new Stage([login, pagoMovilScene, logout]);
+En caso de tener decimal, utilice un punto (.) para separar. Ejemplo: 2300.50`);
+        // Paso a la siguiente escena.
+        return ctx.wizard.next();
+    },
+    async ctx => {
+        // Guardo el monto
+        ctx.wizard.state.data.amount = ctx.message?.text;
+        const AMOUNTREGEX = /^\d+(\.\d{1,2})?/;
+        const amountValidation = AMOUNTREGEX.test(ctx.wizard.state.data.amount);
+        if (!amountValidation) {
+            await ctx.replyWithSticker('CAACAgIAAxkBAAEnZCplRZNZzhcmJvOk0fp6hjzTIgiNrgACfQAD9wLIDy7JuwrdyyJJMwQ');
+            await ctx.reply('Monto inválido, el formato debe ser solo números. En caso de tener cifras decimales, deben ser separadas con un punto (.) recuerda que solo son 2 cifras después del punto.');
+            return ctx.scene.leave();
+        }
+        // Cierro la escena
+        await ctx.replyWithSticker('CAACAgIAAxkBAAEnZ3NlRmac0lOpSBGuVHXf9u3PgWS9hgACBAEAAvcCyA8gD3c76avISTME');
+        await ctx.reply('Procesando el pago, nos comunicaremos con usted a la brevedad posible.');
+        return ctx.scene.leave();
+    },
+);
+
+
+const stage = new Stage([login, pagoMovilScene, logout, pagoMovilModuleScene]);
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
 (async () => {
@@ -283,5 +354,8 @@ bot.action('hacerPago', (ctx) => {
 });
 bot.action('cerrar_sesion', async (ctx) => {
     ctx.scene.enter('my-logout');
+});
+bot.command('asd', (ctx) => {
+    ctx.scene.enter('my-pago-movil-module');
 });
 module.exports = bot.middleware();
