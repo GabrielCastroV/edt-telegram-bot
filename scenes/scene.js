@@ -261,6 +261,7 @@ En caso de tener decimal, utilice un punto (.) para separar. Ejemplo: 2300.50`);
     },
 );
 
+// Pago Movil de módulos Wizard Scene
 const pagoMovilModuleScene = new WizardScene(
     'my-pago-movil-module',
     async ctx => {
@@ -365,7 +366,7 @@ Transferencia:
 Banesco
 Rif: 123456789
 
-${signature} (inscripción)
+${signature} (módulo)
 
 Total a pagar: ${(amount * BCV).toFixed(2)} Bs.
 
