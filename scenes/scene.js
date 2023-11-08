@@ -172,6 +172,7 @@ const logout = new WizardScene(
     async ctx => {
         // Busco por email y lo deslogueo. (verified false)
         await User.findOneAndUpdate({ email: global?.login?.email }, { verified: false });
+        global.login = '';
         await ctx.replyWithSticker('CAACAgIAAxkBAAEnY_xlRX7oRcuZjGTRzJLv1QXd3VhMIwACSQIAAladvQoqlwydCFMhDjME');
         await ctx.reply('Sesión cerrada.');
         await ctx.scene.leave();
@@ -245,7 +246,7 @@ const pagoMovilModuleScene = new WizardScene(
         const userCourse = await Course.findOne({ _id: user?.studying });
         if (!user) {
             await ctx.replyWithSticker('CAACAgIAAxkBAAEnZ2RlRmFO7gR28xOG39cLEeF2jg-tPAACrwADwZxgDNPvAhjBQx5TMwQ');
-            await ctx.reply('Este email no pertenece a ningún estudiante de EDTécnica.');
+            await ctx.reply('Usted ha cerrado sesión. Debe volver a loguearse con /login para pagar su módulo correspondiente.');
             return ctx.scene.leave();
         }
         if (user.module === userCourse.modules) {
