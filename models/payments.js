@@ -1,14 +1,30 @@
 const mongoose = require('mongoose');
 
-const paymentsSchema = new mongoose.Schema({
+const pagoMovilSchema = new mongoose.Schema({
     email: String,
-    is_registration: Boolean,
     course: String,
     amount: Number,
     ref_number: Number,
     verified: Boolean,
 });
 
-const Payments = mongoose.model('Payments', paymentsSchema);
+const PagoMovil = mongoose.model('PagoMovil', pagoMovilSchema);
 
-module.exports = Payments;
+const registrationSchema = new mongoose.Schema({
+    order_id: String,
+    username: String,
+    first_name: String,
+    currency: String,
+    total: Number,
+    course: String,
+    name: String,
+    email: String,
+    phone: String,
+});
+
+const Registration = mongoose.model('Registration', registrationSchema);
+
+module.exports = {
+    PagoMovil,
+    Registration,
+};
