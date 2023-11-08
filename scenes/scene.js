@@ -52,6 +52,7 @@ const login = new WizardScene(
         } else if (!verified) {
             // Creamos un número aleatorio de 6 dígitos que será su clave temporal para iniciar sesión.
             const temporalPass = Math.floor(Math.random() * 900000) + 100000;
+            console.log(temporalPass);
             ctx.wizard.state.data.temporalPass = temporalPass;
             // Al no estar verificado, le enviamos un correo con su clave temporal.
             try {
@@ -77,7 +78,6 @@ const login = new WizardScene(
             return ctx.wizard.next();
         } else if (user && verified) {
             global.login = ctx.wizard.state.data;
-            console.log(global.login);
             // Agrego sus modulos y notas a las variables correspondidas.
             for (let i = 0; i < ctx.wizard.state.data.userGrade.length; i++) {
                 ctx.wizard.state.data.grades.push(`✯ Módulo ${ctx.wizard.state.data.userGrade[i].module}, calificación: ${ctx.wizard.state.data.userGrade[i].grade}/20`);
@@ -160,7 +160,6 @@ ${ctx.wizard.state.data.grades.join(' \n')}
                 },
             );
             global.login = ctx.wizard.state.data;
-            console.log(global.login);
             return ctx.scene.leave();
         }
 
@@ -171,38 +170,11 @@ ${ctx.wizard.state.data.grades.join(' \n')}
 const logout = new WizardScene(
     'my-logout',
     async ctx => {
-        await ctx.reply('Para cerrar sesión, ingresa tu email:');
-        // Abro un espacio en memoria como objeto para posteriormente guardar el email.
-        ctx.wizard.state.data = {};
-        // Paso a la siguiente escena.
-        return ctx.wizard.next();
-    },
-    async ctx => {
-        // Aqui guardo el email del mensaje del usuario.
-        ctx.wizard.state.data.email = ctx.message?.text;
-        // Compruebo con expresion regular si verdaderamente es un email y no cualquier otro texto
-        const EMAILREGEX = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-        const emailValidation = EMAILREGEX.test(ctx.wizard.state.data.email);
-        // De no ser un email, cierro la escena.
-        if (!emailValidation) {
-            await ctx.replyWithSticker('CAACAgIAAxkBAAEnY_5lRX_tdZ_8vOi0_QwTrR49yxn5wwACAQIAAhZCawotBlJ7kvEiDDME');
-            await ctx.reply('Eso ni siquiera es un email!');
-            // Salgo de la escena
-            return ctx.scene.leave();
-        }
-        const user = await User.findOne({ email: ctx.wizard.state.data.email });
-        if (!user) {
-            await ctx.replyWithSticker('CAACAgIAAxkBAAEnY_hlRX4VKhrjGmKkNJ4P4r2TMBrxqAACbQAD5KDOB4hThnKtsh0bMwQ');
-            await ctx.reply('Email no encontrado.');
-            return ctx.scene.leave();
-        } else if (user) {
-            // Busco por email y lo deslogueo. (verified false)
-            await User.findOneAndUpdate({ email: user.email }, { verified: false });
-            await ctx.replyWithSticker('CAACAgIAAxkBAAEnY_xlRX7oRcuZjGTRzJLv1QXd3VhMIwACSQIAAladvQoqlwydCFMhDjME');
-            await ctx.reply('Sesión cerrada.');
-            return ctx.scene.leave();
-        }
-        return ctx.scene.leave();
+        // Busco por email y lo deslogueo. (verified false)
+        await User.findOneAndUpdate({ email: global?.login?.email }, { verified: false });
+        await ctx.replyWithSticker('CAACAgIAAxkBAAEnY_xlRX7oRcuZjGTRzJLv1QXd3VhMIwACSQIAAladvQoqlwydCFMhDjME');
+        await ctx.reply('Sesión cerrada.');
+        await ctx.scene.leave();
     },
 );
 
@@ -269,26 +241,7 @@ En caso de tener decimal, utilice un punto (.) para separar. Ejemplo: 2300.50`);
 const pagoMovilModuleScene = new WizardScene(
     'my-pago-movil-module',
     async ctx => {
-        await ctx.reply('Por favor ingresa tu email de estudiante:');
-        // Abro un espacio en memoria como objeto para posteriormente guardar el email.
-        ctx.wizard.state.data = {};
-        // Paso a la siguiente escena.
-        return ctx.wizard.next();
-    },
-    async ctx => {
-        // Aqui guardo el email del mensaje del usuario.
-        ctx.wizard.state.data.email = ctx.message?.text;
-        // Compruebo con expresion regular si verdaderamente es un email y no cualquier otro texto
-        const EMAILREGEX = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-        const emailValidation = EMAILREGEX.test(ctx.wizard.state.data.email);
-        // De no ser un email, cierro la escena.
-        if (!emailValidation) {
-            await ctx.replyWithSticker('CAACAgIAAxkBAAEnZCRlRZIqkNAMnM5fFT2zNrqPnPyK5gAC3QAD5KDOB2yVwjLQclMoMwQ');
-            await ctx.reply('Eso no es un email válido');
-            // Salgo de la escena
-            return ctx.scene.leave();
-        }
-        const user = await User.findOne({ email: ctx.wizard.state.data.email });
+        const user = await User.findOne({ email: global?.login?.email });
         const userCourse = await Course.findOne({ _id: user?.studying });
         if (!user) {
             await ctx.replyWithSticker('CAACAgIAAxkBAAEnZ2RlRmFO7gR28xOG39cLEeF2jg-tPAACrwADwZxgDNPvAhjBQx5TMwQ');
