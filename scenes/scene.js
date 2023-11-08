@@ -76,6 +76,8 @@ const login = new WizardScene(
             await ctx.reply(`${user.name}, ingresa el código que fue enviado a tu correo:`);
             return ctx.wizard.next();
         } else if (user && verified) {
+            global.login = ctx.wizard.state.data;
+            console.log(global.login);
             // Agrego sus modulos y notas a las variables correspondidas.
             for (let i = 0; i < ctx.wizard.state.data.userGrade.length; i++) {
                 ctx.wizard.state.data.grades.push(`✯ Módulo ${ctx.wizard.state.data.userGrade[i].module}, calificación: ${ctx.wizard.state.data.userGrade[i].grade}/20`);
@@ -157,6 +159,8 @@ ${ctx.wizard.state.data.grades.join(' \n')}
                     },
                 },
             );
+            global.login = ctx.wizard.state.data;
+            console.log(global.login);
             return ctx.scene.leave();
         }
 
@@ -261,7 +265,7 @@ En caso de tener decimal, utilice un punto (.) para separar. Ejemplo: 2300.50`);
     },
 );
 
-// Pago Movil de módulos Wizard Scene
+// Pago Movil de módulos para estudiantes Wizard Scene
 const pagoMovilModuleScene = new WizardScene(
     'my-pago-movil-module',
     async ctx => {
@@ -325,7 +329,6 @@ En caso de tener decimal, utilice un punto (.) para separar. Ejemplo: 2300.50`);
             await ctx.reply('Monto inválido, el formato debe ser solo números. En caso de tener cifras decimales, deben ser separadas con un punto (.) recuerda que solo son 2 cifras después del punto.');
             return ctx.scene.leave();
         }
-        // Cierro la escena
         await ctx.replyWithSticker('CAACAgIAAxkBAAEnZ3NlRmac0lOpSBGuVHXf9u3PgWS9hgACBAEAAvcCyA8gD3c76avISTME');
         await ctx.reply('Procesando el pago, nos comunicaremos con usted a la brevedad posible.');
         return ctx.scene.leave();
