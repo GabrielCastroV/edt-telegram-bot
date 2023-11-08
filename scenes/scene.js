@@ -291,7 +291,6 @@ En caso de tener decimal, utilice un punto (.) para separar. Ejemplo: 2300.50`);
     },
 );
 
-
 const stage = new Stage([login, pagoMovilScene, logout, pagoMovilModuleScene]);
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
