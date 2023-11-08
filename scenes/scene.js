@@ -171,6 +171,7 @@ const logout = new WizardScene(
     'my-logout',
     async ctx => {
         // Busco por email y lo deslogueo. (verified false)
+        await ctx.deleteMessage();
         await User.findOneAndUpdate({ email: global?.login?.email }, { verified: false });
         global.login = '';
         await ctx.replyWithSticker('CAACAgIAAxkBAAEnY_xlRX7oRcuZjGTRzJLv1QXd3VhMIwACSQIAAladvQoqlwydCFMhDjME');
@@ -255,6 +256,7 @@ const pagoMovilModuleScene = new WizardScene(
             return ctx.scene.leave();
         }
         await ctx.reply('Ingresa los cuatro últimos dígitos de la operación. Ejemplo: 8442');
+        ctx.wizard.state.data = {};
         return ctx.wizard.next();
     },
     async ctx => {
@@ -351,7 +353,11 @@ bot.action('cerrar_sesion', async (ctx) => {
     ctx.scene.enter('my-logout');
 });
 bot.action('pagar_modulo', async (ctx) => {
-    pagoMovil(ctx, 'Programación Full Stack 🚀', 130, 'pagarModulo');
+    if (global.login) {
+        pagoMovil(ctx, global.login.userCourse.name, global.login.userCourse.module_price, 'pagarModulo');
+    } else if (!global.login) {
+        await ctx.reply('Su sesión está cerrada, ingrese usando /login');
+    }
 });
 bot.action('pagarModulo', (ctx) => {
     ctx.scene.enter('my-pago-movil-module');
