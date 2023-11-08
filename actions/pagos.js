@@ -1,4 +1,5 @@
 const { Telegraf } = require('telegraf');
+const { Registration } = require('../models/payments');
 require('dotenv').config();
 
 
@@ -62,6 +63,18 @@ bot.on('pre_checkout_query', async (ctx) => {
 });
 
 bot.on('successful_payment', async (ctx) => {
+    const newRegistration = new Registration({
+        order_id: global.userData.orderID,
+        username: global.userData.username,
+        first_name: global.userData.first_name,
+        currency: global.userData.currency,
+        total: (global.userData.total / 100),
+        course: global.userData.signature,
+        name: global.userData.name,
+        email: global.userData.email,
+        phone: global.userData.phone,
+    });
+    await newRegistration.save();
     await ctx.replyWithSticker('CAACAgIAAxkBAAEnZ7JlRnVEqWj7As0G2IF0WFywM3tTUgACTwEAAiI3jgR8lZdITHG8FzME');
     await ctx.reply('Felicidades, su pago ha sido procesado exitosamente.');
 });
