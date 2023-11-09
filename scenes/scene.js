@@ -5,6 +5,7 @@ const User = require('../models/users');
 const Course = require('../models/courses');
 const Grades = require('../models/grades');
 const { getDollarPrices } = require('venecodollar');
+const { PagoMovil } = require('../models/payments');
 require('dotenv').config();
 
 // Login Wizard Scene
@@ -160,6 +161,7 @@ ${ctx.wizard.state.data.grades.join(' \n')}
                 },
             );
             global.login = ctx.wizard.state.data;
+            console.log(global.login);
             return ctx.scene.leave();
         }
 
@@ -285,6 +287,18 @@ En caso de tener decimal, utilice un punto (.) para separar. Ejemplo: 2300.50`);
             await ctx.reply('Monto inválido, el formato debe ser solo números. En caso de tener cifras decimales, deben ser separadas con un punto (.) recuerda que solo son 2 cifras después del punto.');
             return ctx.scene.leave();
         }
+        const newPagoMovil = new PagoMovil({
+            email: global.login.email,
+            course: global.userCourse.name,
+            modality: global.login.userCourse.modality,
+            module: global.login.userCourse.module,
+            payday: global.login.userCourse.payday,
+            module_price: global.login.userCourse.module_price,
+            amount: ctx.wizard.state.data.amount,
+            ref_number: ctx.wizard.state.data.ref,
+            verified: false,
+        });
+        await newPagoMovil.save();
         await ctx.replyWithSticker('CAACAgIAAxkBAAEnZ3NlRmac0lOpSBGuVHXf9u3PgWS9hgACBAEAAvcCyA8gD3c76avISTME');
         await ctx.reply('Procesando el pago, nos comunicaremos con usted a la brevedad posible.');
         return ctx.scene.leave();
