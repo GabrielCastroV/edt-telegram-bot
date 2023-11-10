@@ -289,7 +289,7 @@ En caso de tener decimal, utilice un punto (.) para separar. Ejemplo: 2300.50`);
         }
         const newPagoMovil = new PagoMovil({
             email: global.login.email,
-            course: global.userCourse.name,
+            course: global.login.userCourse.name,
             modality: global.login.userCourse.modality,
             module: global.login.userCourse.module,
             payday: global.login.userCourse.payday,
