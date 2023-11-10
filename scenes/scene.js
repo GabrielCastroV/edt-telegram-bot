@@ -80,28 +80,28 @@ const login = new WizardScene(
         } else if (user && verified) {
             global.login = ctx.wizard.state.data;
             // Agrego sus modulos y notas a las variables correspondidas.
-            for (let i = 0; i < ctx.wizard.state.data.userGrade.length; i++) {
-                ctx.wizard.state.data.grades.push(`✯ Módulo ${ctx.wizard.state.data.userGrade[i].module}, calificación: ${ctx.wizard.state.data.userGrade[i].grade}/20`);
-                ctx.wizard.state.data.grade += ctx.wizard.state.data.userGrade[i].grade;
+            for (let i = 0; i < global.login.userGrade.length; i++) {
+                global.login.grades.push(`✯ Módulo ${global.login.userGrade[i].module}, calificación: ${global.login.userGrade[i].grade}/20`);
+                global.login.grade += global.login.userGrade[i].grade;
             }
             const info = (`
-            Bienvenido <b>${ctx.wizard.state.data.user.name}</b> 👋
+            Bienvenido <b>${global.login.user.name}</b> 👋
             
 <u>Información del Estudiante: </u>
             
-🎓 Cursando: ${ctx.wizard.state.data.userCourse.name}
-🌐 Modalidad: ${ctx.wizard.state.data.userCourse.modality}
+🎓 Cursando: ${global.login.userCourse.name}
+🌐 Modalidad: ${global.login.userCourse.modality}
             
-📖 Módulo actual: ${ctx.wizard.state.data.user.module}/${ctx.wizard.state.data.userCourse.modules}
-📊 Asistencia: ${ctx.wizard.state.data.user.attendance}%
+📖 Módulo actual: ${global.login.user.module}/${global.login.userCourse.modules}
+📊 Asistencia: ${global.login.user.attendance}%
 
-${ctx.wizard.state.data.grades.join(' \n')}
+${global.login.grades.join(' \n')}
 
-🏆 Actual promedio de notas: ${(ctx.wizard.state.data.grade / ctx.wizard.state.data.user.module).toFixed(0)}
-📝 Nota final hasta ahora: ${(ctx.wizard.state.data.grade / ctx.wizard.state.data.userCourse.modules).toFixed(0)}
+🏆 Actual promedio de notas: ${(global.login.grade / global.login.user.module).toFixed(0)}
+📝 Nota final hasta ahora: ${(global.login.grade / global.login.userCourse.modules).toFixed(0)}
             
-🗓️ Próximo pago: ${ctx.wizard.state.data.user.payday.toLocaleDateString()}
-💲 Monto de mensualidad: ${ctx.wizard.state.data.userCourse.module_price}$
+🗓️ Próximo pago: ${global.login.user.payday.toLocaleDateString()}
+💲 Monto de mensualidad: ${global.login.userCourse.module_price}$
 `);
             await ctx.replyWithHTML(info,
                 {
@@ -161,7 +161,6 @@ ${ctx.wizard.state.data.grades.join(' \n')}
                 },
             );
             global.login = ctx.wizard.state.data;
-            console.log(global.login);
             return ctx.scene.leave();
         }
 
@@ -358,6 +357,9 @@ Total a pagar: ${(amount * BCV).toFixed(2)} Bs.
 };
 bot.command('login', ctx => {
     ctx.scene.enter('my-login');
+});
+bot.command('a', () => {
+    console.log(global.login);
 });
 bot.action('hacerPago', (ctx) => {
     ctx.scene.enter('my-pago-movil');
