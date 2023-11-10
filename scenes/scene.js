@@ -8,6 +8,43 @@ const { getDollarPrices } = require('venecodollar');
 const { PagoMovil } = require('../models/payments');
 require('dotenv').config();
 
+// Panel del login.
+const loginPanel = async ctx => {
+    // Agrego sus modulos y notas a las variables correspondidas.
+    for (let i = 0; i < global.login.userGrade.length; i++) {
+        global.login.grades.push(`✯ Módulo ${global.login.userGrade[i].module}, calificación: ${global.login.userGrade[i].grade}/20`);
+        global.login.grade += global.login.userGrade[i].grade;
+    }
+    const info = (`
+    Bienvenido <b>${global.login.user.name}</b> 👋
+    
+<u>Información del Estudiante: </u>
+    
+🎓 Cursando: ${global.login.userCourse.name}
+🌐 Modalidad: ${global.login.userCourse.modality}
+    
+📖 Módulo actual: ${global.login.user.module}/${global.login.userCourse.modules}
+📊 Asistencia: ${global.login.user.attendance}%
+
+${global.login.grades.join(' \n')}
+
+🏆 Actual promedio de notas: ${(global.login.grade / global.login.user.module).toFixed(0)}
+📝 Nota final hasta ahora: ${(global.login.grade / global.login.userCourse.modules).toFixed(0)}
+    
+🗓️ Próximo pago: ${global.login.user.payday.toLocaleDateString()}
+💲 Monto de mensualidad: ${global.login.userCourse.module_price}$
+`);
+    await ctx.replyWithHTML(info,
+        {
+            reply_markup: {
+                inline_keyboard: [
+                    [{ text: 'Cerrar sesión 🔒', callback_data: 'cerrar_sesion' }, { text: 'Pagar módulo 💸', callback_data: 'pagar_modulo' }],
+                ],
+            },
+        },
+    );
+};
+
 // Login Wizard Scene
 const login = new WizardScene(
     'my-login',
@@ -79,42 +116,7 @@ const login = new WizardScene(
             return ctx.wizard.next();
         } else if (user && verified) {
             global.login = ctx.wizard.state.data;
-            const loginPanel = async (ctx) => {
-                // Agrego sus modulos y notas a las variables correspondidas.
-                for (let i = 0; i < global.login.userGrade.length; i++) {
-                    global.login.grades.push(`✯ Módulo ${global.login.userGrade[i].module}, calificación: ${global.login.userGrade[i].grade}/20`);
-                    global.login.grade += global.login.userGrade[i].grade;
-                }
-                const info = (`
-                Bienvenido <b>${global.login.user.name}</b> 👋
-                
-    <u>Información del Estudiante: </u>
-                
-    🎓 Cursando: ${global.login.userCourse.name}
-    🌐 Modalidad: ${global.login.userCourse.modality}
-                
-    📖 Módulo actual: ${global.login.user.module}/${global.login.userCourse.modules}
-    📊 Asistencia: ${global.login.user.attendance}%
-    
-    ${global.login.grades.join(' \n')}
-    
-    🏆 Actual promedio de notas: ${(global.login.grade / global.login.user.module).toFixed(0)}
-    📝 Nota final hasta ahora: ${(global.login.grade / global.login.userCourse.modules).toFixed(0)}
-                
-    🗓️ Próximo pago: ${global.login.user.payday.toLocaleDateString()}
-    💲 Monto de mensualidad: ${global.login.userCourse.module_price}$
-    `);
-                await ctx.replyWithHTML(info,
-                    {
-                        reply_markup: {
-                            inline_keyboard: [
-                                [{ text: 'Cerrar sesión 🔒', callback_data: 'cerrar_sesion' }, { text: 'Pagar módulo 💸', callback_data: 'pagar_modulo' }],
-                            ],
-                        },
-                    },
-                );
-            };
-
+            loginPanel(ctx);
             return ctx.scene.leave();
         }
         return ctx.wizard.next();
