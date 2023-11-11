@@ -121,11 +121,6 @@ const login = new WizardScene(
 
             await ctx.reply(`${user.name}, ingresa el código que fue enviado a tu correo:`);
             return ctx.wizard.next();
-        } else if (user && verified) {
-            global.login = ctx.wizard.state.data;
-            // agrego el panel del login
-            loginPanel(ctx);
-            return ctx.scene.leave();
         }
         return ctx.wizard.next();
     },
