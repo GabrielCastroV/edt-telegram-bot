@@ -50,6 +50,7 @@ const login = new WizardScene(
     'my-login',
     async ctx => {
         if (global.login) {
+            ctx.deleteMessage();
             loginPanel(ctx);
             return ctx.scene.leave();
         }
