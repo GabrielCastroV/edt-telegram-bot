@@ -49,6 +49,10 @@ ${global.login.grades.join(' \n')}
 const login = new WizardScene(
     'my-login',
     async ctx => {
+        if (global.login) {
+            loginPanel(ctx);
+            return ctx.scene.leave();
+        }
         await ctx.reply('Por favor ingresa tu email:');
         // Abro un espacio en memoria como objeto para posteriormente guardar el email.
         ctx.wizard.state.data = {};
@@ -116,6 +120,7 @@ const login = new WizardScene(
             return ctx.wizard.next();
         } else if (user && verified) {
             global.login = ctx.wizard.state.data;
+            // agrego el panel del login
             loginPanel(ctx);
             return ctx.scene.leave();
         }
@@ -131,40 +136,10 @@ const login = new WizardScene(
         } else if (ctx.wizard.state.data.code == ctx.wizard.state.data.temporalPass) {
             // Verifico al usuario pe causa.
             await User.findByIdAndUpdate(ctx.wizard.state.data.user._id, { verified: true });
-            // Agrego sus modulos y notas a las variables correspondidas.
-            for (let i = 0; i < ctx.wizard.state.data.userGrade.length; i++) {
-                ctx.wizard.state.data.grades.push(`✯ Módulo ${ctx.wizard.state.data.userGrade[i].module}, calificación: ${ctx.wizard.state.data.userGrade[i].grade}/20`);
-                ctx.wizard.state.data.grade += ctx.wizard.state.data.userGrade[i].grade;
-            }
-            const info = (`
-            Bienvenido <b>${ctx.wizard.state.data.user.name}</b> 👋
-            
-<u>Información del Estudiante: </u>
-            
-🎓 Cursando: ${ctx.wizard.state.data.userCourse.name}
-🌐 Modalidad: ${ctx.wizard.state.data.userCourse.modality}
-            
-📖 Módulo actual: ${ctx.wizard.state.data.user.module}/${ctx.wizard.state.data.userCourse.modules}
-📊 Asistencia: ${ctx.wizard.state.data.user.attendance}%
 
-${ctx.wizard.state.data.grades.join(' \n')}
-
-🏆 Actual promedio de notas: ${(ctx.wizard.state.data.grade / ctx.wizard.state.data.user.module).toFixed(0)}
-📝 Nota final hasta ahora: ${(ctx.wizard.state.data.grade / ctx.wizard.state.data.userCourse.modules).toFixed(0)}
-            
-🗓️ Próximo pago: ${ctx.wizard.state.data.user.payday.toLocaleDateString()}
-💲 Monto de mensualidad: ${ctx.wizard.state.data.userCourse.module_price}$
-`);
-            await ctx.replyWithHTML(info,
-                {
-                    reply_markup: {
-                        inline_keyboard: [
-                            [{ text: 'Cerrar sesión 🔒', callback_data: 'cerrar_sesion' }, { text: 'Pagar módulo 💸', callback_data: 'pagar_modulo' }],
-                        ],
-                    },
-                },
-            );
+            // agrego el panel del login
             global.login = ctx.wizard.state.data;
+            loginPanel(ctx);
             return ctx.scene.leave();
         }
 
