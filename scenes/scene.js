@@ -43,6 +43,8 @@ ${global.login.grades.join(' \n')}
             },
         },
     );
+    global.login.grade = 0;
+    global.login.grades = [];
 };
 
 // Login Wizard Scene
