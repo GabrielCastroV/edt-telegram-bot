@@ -173,6 +173,7 @@ const pagoMovilScene = new WizardScene(
             // Salgo de la escena
             return ctx.scene.leave();
         }
+        // Creo un menú con opciones multiples.
         const replyKeyboard = Markup.keyboard([
             ['Programación', 'Marketing'],
             ['Fotografía', 'Diseño Digital'],
@@ -198,7 +199,6 @@ const pagoMovilScene = new WizardScene(
             // Salgo de la escena
             return ctx.scene.leave();
         }
-        console.log(ctx.wizard.state.data.course);
         await ctx.reply('Ingresa los cuatro últimos dígitos de la operación. Ejemplo: 8442');
         return ctx.wizard.next();
     },
@@ -234,7 +234,7 @@ En caso de tener decimal, utilice un punto (.) para separar. Ejemplo: 2300.50`);
             first_name: ctx.update.message.chat.first_name ?? 'private user',
             currency: 'VES',
             total: ctx.wizard.state.data.amount,
-            course: null,
+            course: ctx.wizard.state.data.course,
             name: null,
             email: ctx.wizard.state.data.email,
             phone: null,
