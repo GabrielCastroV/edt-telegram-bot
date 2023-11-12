@@ -51,6 +51,7 @@ ${global.login.grades.join(' \n')}
 const login = new WizardScene(
     'my-login',
     async ctx => {
+        console.log(global.login);
         if (global.login) {
             ctx.deleteMessage();
             loginPanel(ctx);
@@ -94,34 +95,32 @@ const login = new WizardScene(
             await ctx.replyWithSticker('CAACAgIAAxkBAAEnZBJlRY-oHk-8ktm0jVsC66GCva6s1wACuQ4AAmxu8Emp2F_Xn3emBjME');
             await ctx.reply('Correo no encontrado en la base de datos. Recuerda que debes estar cursando el primer módulo o superior para asignarte tu usuario de EDTécnica.');
             return ctx.scene.leave();
-        } else if (!verified) {
-            // Creamos un número aleatorio de 6 dígitos que será su clave temporal para iniciar sesión.
-            const temporalPass = Math.floor(Math.random() * 900000) + 100000;
-            console.log(temporalPass);
-            ctx.wizard.state.data.temporalPass = temporalPass;
-            // Al no estar verificado, le enviamos un correo con su clave temporal.
-            try {
-                const transporter = nodemailer.createTransport({
-                    host: 'smtp.gmail.com',
-                    port: 465,
-                    secure: true,
-                    auth: {
-                        user: process.env.EMAIL_USER,
-                        pass: process.env.EMAIL_PASS,
-                    },
-                });
-                await transporter.sendMail({
-                    from: process.env.EMAIL_USER,
-                    to: ctx.wizard.state.data.email,
-                    subject: 'Clave temporal EDT Bot',
-                    html: `Código de verificacion es: <b> ${temporalPass} </b>` });
-            } catch (error) {
-                console.log(error);
-            }
-
-            await ctx.reply(`${user.name}, ingresa el código que fue enviado a tu correo:`);
-            return ctx.wizard.next();
         }
+        // Creamos un número aleatorio de 6 dígitos que será su clave temporal para iniciar sesión.
+        const temporalPass = Math.floor(Math.random() * 900000) + 100000;
+        console.log(temporalPass);
+        ctx.wizard.state.data.temporalPass = temporalPass;
+        // Al no estar verificado, le enviamos un correo con su clave temporal.
+        try {
+            const transporter = nodemailer.createTransport({
+                host: 'smtp.gmail.com',
+                port: 465,
+                secure: true,
+                auth: {
+                    user: process.env.EMAIL_USER,
+                    pass: process.env.EMAIL_PASS,
+                },
+            });
+            await transporter.sendMail({
+                from: process.env.EMAIL_USER,
+                to: ctx.wizard.state.data.email,
+                subject: 'Clave temporal EDT Bot',
+                html: `Código de verificacion es: <b> ${temporalPass} </b>` });
+        } catch (error) {
+            console.log(error);
+        }
+
+        await ctx.reply(`${user.name}, ingresa el código que fue enviado a tu correo:`);
         return ctx.wizard.next();
     },
     async ctx => {
