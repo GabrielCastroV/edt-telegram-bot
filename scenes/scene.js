@@ -51,7 +51,6 @@ ${global.login.grades.join(' \n')}
 const login = new WizardScene(
     'my-login',
     async ctx => {
-        console.log(global.login);
         if (global.login) {
             ctx.deleteMessage();
             loginPanel(ctx);
@@ -72,7 +71,7 @@ const login = new WizardScene(
         // De no ser un email, cierro la escena.
         if (!emailValidation) {
             await ctx.replyWithSticker('CAACAgIAAxkBAAEnZA5lRY2LGfawNgGmyJba0uY9eAkHwwACWQADUomRI5_hf3uttGWoMwQ');
-            await ctx.reply('Eso no es un email');
+            await ctx.reply('Eso no es un email.');
             // Salgo de la escena
             return ctx.scene.leave();
         }
@@ -81,13 +80,11 @@ const login = new WizardScene(
         // Consulto tambien que curso esta estudiando y sus notas
         const userCourse = await Course.findOne({ _id: user?.studying });
         const userGrade = await Grades.find({ user: user?._id });
-        // Consulto si el usuario esta verificado (logueado) o no.
-        const verified = user?.verified;
+
         // Guardo la info del usuario para usarla luego.
         ctx.wizard.state.data.user = user;
         ctx.wizard.state.data.userCourse = userCourse;
         ctx.wizard.state.data.userGrade = userGrade;
-        ctx.wizard.state.data.verified = verified;
         ctx.wizard.state.data.grades = [];
         ctx.wizard.state.data.grade = 0;
         if (!user) {
@@ -131,8 +128,6 @@ const login = new WizardScene(
             await ctx.reply('Alto ahi! el codigo ingresado no es válido, intenta loguearte mas tarde.');
             return ctx.scene.leave();
         } else if (ctx.wizard.state.data.code == ctx.wizard.state.data.temporalPass) {
-            // Verifico al usuario pe causa.
-            await User.findByIdAndUpdate(ctx.wizard.state.data.user._id, { verified: true });
             // guardo los datos en la variable global
             global.login = ctx.wizard.state.data;
             // agrego el panel del login
@@ -147,9 +142,7 @@ const login = new WizardScene(
 const logout = new WizardScene(
     'my-logout',
     async ctx => {
-        // Busco por email y lo deslogueo. (verified false)
         await ctx.deleteMessage();
-        await User.findOneAndUpdate({ email: global?.login?.email }, { verified: false });
         global.login = '';
         await ctx.replyWithSticker('CAACAgIAAxkBAAEnY_xlRX7oRcuZjGTRzJLv1QXd3VhMIwACSQIAAladvQoqlwydCFMhDjME');
         await ctx.reply('Sesión cerrada.');
@@ -333,9 +326,6 @@ Total a pagar: ${(amount * BCV).toFixed(2)} Bs.
 };
 bot.command('login', ctx => {
     ctx.scene.enter('my-login');
-});
-bot.command('a', () => {
-    console.log(global.login);
 });
 bot.action('hacerPago', (ctx) => {
     ctx.scene.enter('my-pago-movil');
