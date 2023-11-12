@@ -134,9 +134,9 @@ const login = new WizardScene(
         } else if (ctx.wizard.state.data.code == ctx.wizard.state.data.temporalPass) {
             // Verifico al usuario pe causa.
             await User.findByIdAndUpdate(ctx.wizard.state.data.user._id, { verified: true });
-
-            // agrego el panel del login
+            // guardo los datos en la variable global
             global.login = ctx.wizard.state.data;
+            // agrego el panel del login
             loginPanel(ctx);
             return ctx.scene.leave();
         }
