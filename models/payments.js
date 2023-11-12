@@ -24,6 +24,7 @@ const registrationSchema = new mongoose.Schema({
     name: String,
     email: String,
     phone: String,
+    verified: Boolean,
 });
 
 const Registration = mongoose.model('Registration', registrationSchema);

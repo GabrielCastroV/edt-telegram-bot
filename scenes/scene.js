@@ -5,7 +5,7 @@ const User = require('../models/users');
 const Course = require('../models/courses');
 const Grades = require('../models/grades');
 const { getDollarPrices } = require('venecodollar');
-const { PagoMovil } = require('../models/payments');
+const { PagoMovil, Registration } = require('../models/payments');
 require('dotenv').config();
 
 // Panel del login.
@@ -88,7 +88,7 @@ const login = new WizardScene(
         ctx.wizard.state.data.grades = [];
         ctx.wizard.state.data.grade = 0;
         if (!user) {
-            // El correo no existe en la base de datos.
+            // Si el correo no existe en la base de datos, le notifico y cierro escena.
             await ctx.replyWithSticker('CAACAgIAAxkBAAEnZBJlRY-oHk-8ktm0jVsC66GCva6s1wACuQ4AAmxu8Emp2F_Xn3emBjME');
             await ctx.reply('Correo no encontrado en la base de datos. Recuerda que debes estar cursando el primer módulo o superior para asignarte tu usuario de EDTécnica.');
             return ctx.scene.leave();
@@ -128,9 +128,9 @@ const login = new WizardScene(
             await ctx.reply('Alto ahi! el codigo ingresado no es válido, intenta loguearte mas tarde.');
             return ctx.scene.leave();
         } else if (ctx.wizard.state.data.code == ctx.wizard.state.data.temporalPass) {
-            // guardo los datos en la variable global
+            // Guardo los datos en la variable global
             global.login = ctx.wizard.state.data;
-            // agrego el panel del login
+            // Agrego el panel del login
             loginPanel(ctx);
             return ctx.scene.leave();
         }
@@ -202,6 +202,18 @@ En caso de tener decimal, utilice un punto (.) para separar. Ejemplo: 2300.50`);
             await ctx.reply('Monto inválido, el formato debe ser solo números. En caso de tener cifras decimales, deben ser separadas con un punto (.) recuerda que solo son 2 cifras después del punto.');
             return ctx.scene.leave();
         }
+        const newRegistration = new Registration({
+            order_id: ctx.wizard.state.data.ref,
+            username: ctx.update.message.chat.username ?? 'private user',
+            first_name: ctx.update.message.chat.first_name ?? 'private user',
+            currency: 'VES',
+            total: ctx.wizard.state.data.amount,
+            course: null,
+            name: null,
+            email: ctx.wizard.state.data.email,
+            phone: null,
+            verified: false,
+        });
         // Cierro la escena
         await ctx.replyWithSticker('CAACAgIAAxkBAAEnY_ZlRXwZCgqt4TXfusUiwb4LJ6-SWgACaAADwDZPE0z9PaPnxGmHMwQ');
         await ctx.reply('Procesando el pago, nos comunicaremos con usted mediante correo electrónico. Bienvenido a EDTécnica.');
