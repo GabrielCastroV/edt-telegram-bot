@@ -221,13 +221,19 @@ En caso de tener decimal, utilice un punto (.) para separar. Ejemplo: 2300.50`);
     async ctx => {
         // Guardo el monto
         ctx.wizard.state.data.amount = ctx.message?.text;
+
+        // Verifico que sea un monto numérico y que tenga dos decimales opcionales separado por punto.
         const AMOUNTREGEX = /^\d+(\.\d{1,2})?/;
         const amountValidation = AMOUNTREGEX.test(ctx.wizard.state.data.amount);
+
+        // De no ser un monto valido, manejo el error de esta forma
         if (!amountValidation) {
             await ctx.replyWithSticker('CAACAgIAAxkBAAEnZCplRZNZzhcmJvOk0fp6hjzTIgiNrgACfQAD9wLIDy7JuwrdyyJJMwQ');
             await ctx.reply('Monto inválido, el formato debe ser solo números. En caso de tener cifras decimales, deben ser separadas con un punto (.) recuerda que solo son 2 cifras después del punto.');
             return ctx.scene.leave();
         }
+
+        // Creo el recibo del pago movil del usuario.
         const newRegistration = new Registration({
             order_id: ctx.wizard.state.data.ref,
             username: ctx.update.message.chat.username ?? 'private user',
@@ -240,10 +246,13 @@ En caso de tener decimal, utilice un punto (.) para separar. Ejemplo: 2300.50`);
             phone: null,
             verified: false,
         });
+
+        // Procedo a enviar el nuevo pago movil a la base de datos.
         await newRegistration.save();
-        // Cierro la escena
+
         await ctx.replyWithSticker('CAACAgIAAxkBAAEnY_ZlRXwZCgqt4TXfusUiwb4LJ6-SWgACaAADwDZPE0z9PaPnxGmHMwQ');
         await ctx.reply('Procesando el pago, nos comunicaremos con usted mediante correo electrónico. Bienvenido a EDTécnica.');
+        // Cierro la escena
         return ctx.scene.leave();
     },
 );
