@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { Telegraf, session, Scenes: { WizardScene, Stage } } = require('telegraf');
+const { Telegraf, session, Scenes: { WizardScene, Stage }, Markup } = require('telegraf');
 const nodemailer = require('nodemailer');
 const User = require('../models/users');
 const Course = require('../models/courses');
@@ -173,6 +173,32 @@ const pagoMovilScene = new WizardScene(
             // Salgo de la escena
             return ctx.scene.leave();
         }
+        const replyKeyboard = Markup.keyboard([
+            ['Programación', 'Marketing'],
+            ['Fotografía', 'Diseño Digital'],
+            ['Programación Online', 'Marketing Online'],
+            ['Robótica'],
+        ]).resize();
+        await ctx.reply('Selecciona una opción:', replyKeyboard);
+        return ctx.wizard.next();
+    },
+    async ctx => {
+        ctx.wizard.state.data.course = ctx.message?.text;
+
+        const validOptions = [
+            'Programación', 'Marketing',
+            'Fotografía', 'Diseño Digital',
+            'Programación Online', 'Marketing Online',
+            'Robótica',
+        ];
+        // En caso de elegir mal la opción.
+        if (!validOptions.includes(ctx.wizard.state.data.course)) {
+            await ctx.replyWithSticker('CAACAgIAAxkBAAEnY_5lRX_tdZ_8vOi0_QwTrR49yxn5wwACAQIAAhZCawotBlJ7kvEiDDME');
+            await ctx.reply('La opción es inválida.');
+            // Salgo de la escena
+            return ctx.scene.leave();
+        }
+        console.log(ctx.wizard.state.data.course);
         await ctx.reply('Ingresa los cuatro últimos dígitos de la operación. Ejemplo: 8442');
         return ctx.wizard.next();
     },
