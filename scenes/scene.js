@@ -240,6 +240,7 @@ En caso de tener decimal, utilice un punto (.) para separar. Ejemplo: 2300.50`);
             phone: null,
             verified: false,
         });
+        await newRegistration.save();
         // Cierro la escena
         await ctx.replyWithSticker('CAACAgIAAxkBAAEnY_ZlRXwZCgqt4TXfusUiwb4LJ6-SWgACaAADwDZPE0z9PaPnxGmHMwQ');
         await ctx.reply('Procesando el pago, nos comunicaremos con usted mediante correo electrónico. Bienvenido a EDTécnica.');
