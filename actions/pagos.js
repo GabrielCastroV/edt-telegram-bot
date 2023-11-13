@@ -1,6 +1,7 @@
 const { Telegraf } = require('telegraf');
 const { Registration } = require('../models/payments');
 const Course = require('../models/courses');
+const { getDollarPrices } = require('venecodollar');
 require('dotenv').config();
 
 
@@ -36,6 +37,45 @@ const signUp = async (ctx, signature, at, photo_url) => {
         await ctx.sendInvoice(invoice);
     } catch (error) {
         ctx.reply(`ha ocurrido un error (${error})`);
+        console.log(error);
+    }
+};
+
+// Debit / Pago Movil method.
+
+const pagoMovil = async (ctx, signature, at, callback) => {
+    try {
+        await ctx.deleteMessage();
+        const res = await getDollarPrices();
+        const BCV = res[5].dollar;
+        const modulePrice = await Course.find();
+        const info = `
+                Pago Móvil
+
+CI: V-12.345.678
+Banesco
+0412-123456789
+
+Transferencia:
+4242-4242-4242-4242
+Banesco
+Rif: 123456789
+
+${signature} (Inscripción)
+
+Total a pagar: ${(modulePrice[at].registration_price * BCV).toFixed(2)} Bs.
+
+                `;
+        await ctx.reply(info,
+            {
+                reply_markup: {
+                    inline_keyboard: [
+                        [{ text: 'Confirmar pago ✅', callback_data: callback }],
+                    ],
+                },
+            });
+
+    } catch (error) {
         console.log(error);
     }
 };
@@ -85,5 +125,6 @@ bot.on('successful_payment', async (ctx) => {
 
 module.exports = {
     signUp: signUp,
+    pagoMovil: pagoMovil,
     middleware: bot.middleware(),
 };

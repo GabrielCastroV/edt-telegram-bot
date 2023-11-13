@@ -1,8 +1,6 @@
 const { Telegraf } = require('telegraf');
 require('dotenv').config();
-const { signUp, middleware } = require('./pagos.js');
-const { getDollarPrices } = require('venecodollar');
-const Course = require('../models/courses.js');
+const { signUp, middleware, pagoMovil } = require('./pagos.js');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
@@ -154,45 +152,6 @@ const paymentMethod = async (ctx, inscribirse, pago_movil, volver) => {
                     ],
                 },
             });
-    } catch (error) {
-        console.log(error);
-    }
-};
-
-// Debit / Pago Movil method.
-
-const pagoMovil = async (ctx, signature, at, callback) => {
-    try {
-        await ctx.deleteMessage();
-        const res = await getDollarPrices();
-        const BCV = res[5].dollar;
-        const modulePrice = await Course.find();
-        const info = `
-                Pago Móvil
-
-CI: V-12.345.678
-Banesco
-0412-123456789
-
-Transferencia:
-4242-4242-4242-4242
-Banesco
-Rif: 123456789
-
-${signature} (inscripción)
-
-Total a pagar: ${(modulePrice[at].registration_price * BCV).toFixed(2)} Bs.
-
-                `;
-        await ctx.reply(info,
-            {
-                reply_markup: {
-                    inline_keyboard: [
-                        [{ text: 'Confirmar pago ✅', callback_data: callback }],
-                    ],
-                },
-            });
-
     } catch (error) {
         console.log(error);
     }
