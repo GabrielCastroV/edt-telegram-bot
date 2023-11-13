@@ -1,9 +1,6 @@
 const { Telegraf } = require('telegraf');
 require('dotenv').config();
 const { signUp, middleware } = require('./pagos.js');
-const { getDollarPrices } = require('venecodollar');
-const Course = require('../models/courses.js');
-
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
