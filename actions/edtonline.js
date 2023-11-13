@@ -2,6 +2,7 @@ const { Telegraf } = require('telegraf');
 require('dotenv').config();
 const { signUp, middleware } = require('./pagos.js');
 const { getDollarPrices } = require('venecodollar');
+const Course = require('../models/courses.js');
 
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
@@ -117,11 +118,12 @@ const paymentMethod = async (ctx, inscribirse, pago_movil, volver) => {
 
 // Debit / Pago Movil method.
 
-const pagoMovil = async (ctx, signature, amount, callback) => {
+const pagoMovil = async (ctx, signature, at, callback) => {
     try {
         await ctx.deleteMessage();
         const res = await getDollarPrices();
         const BCV = res[5].dollar;
+        const modulePrice = await Course.find();
         const info = `
                 Pago Móvil
 
@@ -136,7 +138,7 @@ Rif: 123456789
 
 ${signature} (inscripción)
 
-Total a pagar: ${(amount * BCV).toFixed(2)} Bs.
+Total a pagar: ${(modulePrice[at].registration_price * BCV).toFixed(2)} Bs.
 
                 `;
         await ctx.reply(info,
@@ -242,10 +244,10 @@ bot.action('metodo_pago_pr_on', async (ctx) => {
     paymentMethod(ctx, 'inscribir_pr_on', 'pago_movil_pr_on', 'programacion_on');
 });
 bot.action('pago_movil_pr_on', async (ctx) => {
-    pagoMovil(ctx, 'Programación Full Stack Online 🚀', 100, 'hacerPago');
+    pagoMovil(ctx, 'Programación Full Stack Online 🚀', 4, 'hacerPago');
 });
 bot.action('inscribir_pr_on', async (ctx) => {
-    signUp(ctx, 'Programación Full Stack Online 🚀', 10000, 'https://i.imgur.com/hvnITG8.jpg');
+    signUp(ctx, 'Programación Full Stack Online 🚀', 4, 'https://i.imgur.com/hvnITG8.jpg');
 });
 
 // Marketing y Redes Sociales
@@ -317,10 +319,10 @@ bot.action('metodo_pago_mr_on', async (ctx) => {
     paymentMethod(ctx, 'inscribir_mr_on', 'pago_movil_mr_on', 'marketing_redes_on');
 });
 bot.action('pago_movil_mr_on', async (ctx) => {
-    pagoMovil(ctx, 'Marketing y Redes Sociales Online 📈', 100, 'hacerPago');
+    pagoMovil(ctx, 'Marketing y Redes Sociales Online 📈', 5, 'hacerPago');
 });
 bot.action('inscribir_mr_on', async (ctx) => {
-    signUp(ctx, 'Marketing y Redes Sociales Online', 10000, 'https://i.imgur.com/34YMyWK.jpg');
+    signUp(ctx, 'Marketing y Redes Sociales Online', 5, 'https://i.imgur.com/34YMyWK.jpg');
 });
 
 

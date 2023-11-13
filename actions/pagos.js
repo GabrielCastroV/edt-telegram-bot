@@ -1,5 +1,6 @@
 const { Telegraf } = require('telegraf');
 const { Registration } = require('../models/payments');
+const Course = require('../models/courses');
 require('dotenv').config();
 
 
@@ -7,8 +8,9 @@ const bot = new Telegraf(process.env.BOT_TOKEN);
 
 // inscribirse/pagar (funcion) Credit Card Method
 
-const signUp = async (ctx, signature, amount, photo_url) => {
+const signUp = async (ctx, signature, at, photo_url) => {
     try {
+        const course = await Course.find();
         await ctx.deleteMessage();
         const invoice = {
             title: `Curso de ${signature}`,
@@ -19,7 +21,7 @@ const signUp = async (ctx, signature, amount, photo_url) => {
             prices: [
                 {
                     label: signature,
-                    amount: amount,
+                    amount: (course[at].registration_price * 100),
                 },
             ],
             photo_url: photo_url,

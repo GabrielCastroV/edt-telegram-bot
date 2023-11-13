@@ -2,6 +2,7 @@ const { Telegraf } = require('telegraf');
 require('dotenv').config();
 const { signUp, middleware } = require('./pagos.js');
 const { getDollarPrices } = require('venecodollar');
+const Course = require('../models/courses.js');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
@@ -64,11 +65,12 @@ const paymentMethod = async (ctx, inscribirse, pago_movil, volver) => {
 
 // Debit / Pago Movil method.
 
-const pagoMovil = async (ctx, signature, amount, callback) => {
+const pagoMovil = async (ctx, signature, at, callback) => {
     try {
         await ctx.deleteMessage();
         const res = await getDollarPrices();
         const BCV = res[5].dollar;
+        const modulePrice = await Course.find();
         const info = `
                 Pago Móvil
 
@@ -83,7 +85,7 @@ Rif: 123456789
 
 ${signature} (inscripción)
 
-Total a pagar: ${(amount * BCV).toFixed(2)} Bs.
+Total a pagar: ${(modulePrice[at].registration_price * BCV).toFixed(2)} Bs.
 
                 `;
         await ctx.reply(info,
@@ -225,10 +227,10 @@ bot.action('metodo_pago_ro', async (ctx) => {
     paymentMethod(ctx, 'inscribir_ro', 'pago_movil_ro', 'robotica_plus');
 });
 bot.action('pago_movil_ro', async (ctx) => {
-    pagoMovil(ctx, 'Robótica 🤖', 100, 'hacerPago');
+    pagoMovil(ctx, 'Robótica 🤖', 6, 'hacerPago');
 });
 bot.action('inscribir_ro', async (ctx) => {
-    signUp(ctx, 'Robótica EDT Plus 🤖', 10000, 'https://i.imgur.com/mdpWirS.jpg');
+    signUp(ctx, 'Robótica EDT Plus 🤖', 6, 'https://i.imgur.com/mdpWirS.jpg');
 });
 
 

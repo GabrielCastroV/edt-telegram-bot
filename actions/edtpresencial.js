@@ -2,6 +2,7 @@ const { Telegraf } = require('telegraf');
 require('dotenv').config();
 const { signUp, middleware } = require('./pagos.js');
 const { getDollarPrices } = require('venecodollar');
+const Course = require('../models/courses.js');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
@@ -160,11 +161,12 @@ const paymentMethod = async (ctx, inscribirse, pago_movil, volver) => {
 
 // Debit / Pago Movil method.
 
-const pagoMovil = async (ctx, signature, amount, callback) => {
+const pagoMovil = async (ctx, signature, at, callback) => {
     try {
         await ctx.deleteMessage();
         const res = await getDollarPrices();
         const BCV = res[5].dollar;
+        const modulePrice = await Course.find();
         const info = `
                 Pago Móvil
 
@@ -179,7 +181,7 @@ Rif: 123456789
 
 ${signature} (inscripción)
 
-Total a pagar: ${(amount * BCV).toFixed(2)} Bs.
+Total a pagar: ${(modulePrice[at].registration_price * BCV).toFixed(2)} Bs.
 
                 `;
         await ctx.reply(info,
@@ -256,10 +258,10 @@ bot.action('metodo_pago_pr', async (ctx) => {
     paymentMethod(ctx, 'inscribir_pr', 'pago_movil_pr', 'programacion');
 });
 bot.action('pago_movil_pr', async (ctx) => {
-    pagoMovil(ctx, 'Programación Full Stack 🚀', 130, 'hacerPago');
+    pagoMovil(ctx, 'Programación Full Stack 🚀', 0, 'hacerPago');
 });
 bot.action('inscribir_pr', async (ctx) => {
-    signUp(ctx, 'Programación Full Stack 🚀', 13000, 'https://i.imgur.com/hvnITG8.jpg');
+    signUp(ctx, 'Programación Full Stack 🚀', 0, 'https://i.imgur.com/hvnITG8.jpg');
 });
 
 // Diseño digital
@@ -325,10 +327,10 @@ bot.action('metodo_pago_dd', async (ctx) => {
     paymentMethod(ctx, 'inscribir_dd', 'pago_movil_dd', 'diseno_digital');
 });
 bot.action('pago_movil_dd', async (ctx) => {
-    pagoMovil(ctx, 'Diseño Digital 🎨', 130, 'hacerPago');
+    pagoMovil(ctx, 'Diseño Digital 🎨', 1, 'hacerPago');
 });
 bot.action('inscribir_dd', async (ctx) => {
-    signUp(ctx, 'Diseño Digital', 13000, 'https://i.imgur.com/HtX2Dfc.jpg');
+    signUp(ctx, 'Diseño Digital', 1, 'https://i.imgur.com/HtX2Dfc.jpg');
 });
 
 // Marketing y Redes Sociales
@@ -400,10 +402,10 @@ bot.action('metodo_pago_mr', async (ctx) => {
     paymentMethod(ctx, 'inscribir_mr', 'pago_movil_mr', 'marketing_redes');
 });
 bot.action('pago_movil_mr', async (ctx) => {
-    pagoMovil(ctx, 'Marketing y Redes Sociales 📈', 110, 'hacerPago');
+    pagoMovil(ctx, 'Marketing y Redes Sociales 📈', 2, 'hacerPago');
 });
 bot.action('inscribir_mr', async (ctx) => {
-    signUp(ctx, 'Marketing y Redes Sociales', 11000, 'https://i.imgur.com/waOlFNb.jpg');
+    signUp(ctx, 'Marketing y Redes Sociales', 2, 'https://i.imgur.com/waOlFNb.jpg');
 });
 
 // Fotografia
@@ -465,10 +467,10 @@ bot.action('metodo_pago_f', async (ctx) => {
     paymentMethod(ctx, 'inscribir_f', 'pago_movil_f', 'fotografia');
 });
 bot.action('pago_movil_f', async (ctx) => {
-    pagoMovil(ctx, 'Fotografía 📷', 120, 'hacerPago');
+    pagoMovil(ctx, 'Fotografía 📷', 3, 'hacerPago');
 });
 bot.action('inscribir_f', async (ctx) => {
-    signUp(ctx, 'Fotografía', 12000, 'https://i.imgur.com/lmeAW1r.jpg');
+    signUp(ctx, 'Fotografía', 3, 'https://i.imgur.com/lmeAW1r.jpg');
 });
 
 bot.use(middleware);
