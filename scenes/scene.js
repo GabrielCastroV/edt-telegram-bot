@@ -180,7 +180,7 @@ const pagoMovilScene = new WizardScene(
             ['Programación Online', 'Marketing Online'],
             ['Robótica'],
         ]).resize();
-        await ctx.reply('Selecciona una opción:', replyKeyboard);
+        await ctx.reply('Selecciona el curso que deseas comprar:', replyKeyboard);
         return ctx.wizard.next();
     },
     async ctx => {
@@ -354,7 +354,7 @@ Transferencia:
 Banesco
 Rif: 123456789
 
-${signature} (módulo)
+${signature} (Módulo)
 
 Total a pagar: ${(amount * BCV).toFixed(2)} Bs.
 
