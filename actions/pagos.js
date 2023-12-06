@@ -81,7 +81,7 @@ Total a pagar: ${(modulePrice[at].registration_price * BCV).toFixed(2)} Bs.
 };
 
 const dataInfo = {};
-console.log(dataInfo);
+
 bot.on('pre_checkout_query', async (ctx) => {
     try {
         await ctx.answerPreCheckoutQuery(true);
@@ -100,7 +100,6 @@ bot.on('pre_checkout_query', async (ctx) => {
 
         // Guardo los datos del comprador en la variable dataInfo.
         dataInfo.userData = userData;
-        console.log(dataInfo);
     } catch (error) {
         await ctx.answerPreCheckoutQuery(false, 'La compra no pudo ser procesada.');
         console.log(error);

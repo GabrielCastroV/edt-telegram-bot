@@ -8,31 +8,33 @@ const { getDollarPrices } = require('venecodollar');
 const { PagoMovil, Registration } = require('../models/payments');
 require('dotenv').config();
 
+const data = {};
+
 // Panel del login.
 const loginPanel = async ctx => {
     // Agrego sus modulos y notas a las variables correspondidas.
-    for (let i = 0; i < global.login.userGrade.length; i++) {
-        global.login.grades.push(`✯ Módulo ${global.login.userGrade[i].module}, calificación: ${global.login.userGrade[i].grade}/20`);
-        global.login.grade += global.login.userGrade[i].grade;
+    for (let i = 0; i < data.login.userGrade.length; i++) {
+        data.login.grades.push(`✯ Módulo ${data.login.userGrade[i].module}, calificación: ${data.login.userGrade[i].grade}/20`);
+        data.login.grade += data.login.userGrade[i].grade;
     }
     const info = (`
-    Bienvenido <b>${global.login.user.name}</b> 👋
+    Bienvenido <b>${data.login.user.name}</b> 👋
     
 <u>Información del Estudiante: </u>
     
-🎓 Cursando: ${global.login.userCourse.name}
-🌐 Modalidad: ${global.login.userCourse.modality}
+🎓 Cursando: ${data.login.userCourse.name}
+🌐 Modalidad: ${data.login.userCourse.modality}
     
-📖 Módulo actual: ${global.login.user.module}/${global.login.userCourse.modules}
-📊 Asistencia: ${global.login.user.attendance}%
+📖 Módulo actual: ${data.login.user.module}/${data.login.userCourse.modules}
+📊 Asistencia: ${data.login.user.attendance}%
 
-${global.login.grades.join(' \n')}
+${data.login.grades.join(' \n')}
 
-🏆 Actual promedio de notas: ${(global.login.grade / global.login.user.module).toFixed(0)}
-📝 Nota final hasta ahora: ${(global.login.grade / global.login.userCourse.modules).toFixed(0)}
+🏆 Actual promedio de notas: ${(data.login.grade / data.login.user.module).toFixed(0)}
+📝 Nota final hasta ahora: ${(data.login.grade / data.login.userCourse.modules).toFixed(0)}
     
-🗓️ Próximo pago: ${global.login.user.payday.toLocaleDateString()}
-💲 Monto de mensualidad: ${global.login.userCourse.module_price}$
+🗓️ Próximo pago: ${data.login.user.payday.toLocaleDateString()}
+💲 Monto de mensualidad: ${data.login.userCourse.module_price}$
 `);
     await ctx.replyWithHTML(info,
         {
@@ -43,15 +45,15 @@ ${global.login.grades.join(' \n')}
             },
         },
     );
-    global.login.grade = 0;
-    global.login.grades = [];
+    data.login.grade = 0;
+    data.login.grades = [];
 };
 
 // Login Wizard Scene
 const login = new WizardScene(
     'my-login',
     async ctx => {
-        if (global.login) {
+        if (data.login) {
             ctx.deleteMessage();
             loginPanel(ctx);
             return ctx.scene.leave();
@@ -90,7 +92,7 @@ const login = new WizardScene(
         if (!user) {
             // Si el correo no existe en la base de datos, le notifico y cierro escena.
             await ctx.replyWithSticker('CAACAgIAAxkBAAEnZBJlRY-oHk-8ktm0jVsC66GCva6s1wACuQ4AAmxu8Emp2F_Xn3emBjME');
-            await ctx.reply('Correo no encontrado en la base de datos. Recuerda que debes estar cursando el primer módulo o superior para asignarte tu usuario de EDTécnica.');
+            await ctx.reply('Usted no es estudiante de EDT, le invitamos a registrarse como estudiante en www.virtualasistant.com/create');
             return ctx.scene.leave();
         }
         // Creamos un número aleatorio de 6 dígitos que será su clave temporal para iniciar sesión.
@@ -128,8 +130,8 @@ const login = new WizardScene(
             await ctx.reply('Alto ahi! el codigo ingresado no es válido, intenta loguearte mas tarde.');
             return ctx.scene.leave();
         } else if (ctx.wizard.state.data.code == ctx.wizard.state.data.temporalPass) {
-            // Guardo los datos en la variable global
-            global.login = ctx.wizard.state.data;
+            // Guardo los datos en la variable data
+            data.login = ctx.wizard.state.data;
             // Agrego el panel del login
             loginPanel(ctx);
             return ctx.scene.leave();
@@ -143,7 +145,7 @@ const logout = new WizardScene(
     'my-logout',
     async ctx => {
         await ctx.deleteMessage();
-        global.login = '';
+        data.login = '';
         await ctx.replyWithSticker('CAACAgIAAxkBAAEnY_xlRX7oRcuZjGTRzJLv1QXd3VhMIwACSQIAAladvQoqlwydCFMhDjME');
         await ctx.reply('Sesión cerrada.');
         await ctx.scene.leave();
@@ -261,7 +263,7 @@ En caso de tener decimal, utilice un punto (.) para separar. Ejemplo: 2300.50`);
 const pagoMovilModuleScene = new WizardScene(
     'my-pago-movil-module',
     async ctx => {
-        const user = await User.findOne({ email: global?.login?.email });
+        const user = await User.findOne({ email: data?.login?.email });
         const userCourse = await Course.findOne({ _id: user?.studying });
         if (!user) {
             await ctx.replyWithSticker('CAACAgIAAxkBAAEnZ2RlRmFO7gR28xOG39cLEeF2jg-tPAACrwADwZxgDNPvAhjBQx5TMwQ');
@@ -303,13 +305,31 @@ En caso de tener decimal, utilice un punto (.) para separar. Ejemplo: 2300.50`);
             await ctx.reply('Monto inválido, el formato debe ser solo números. En caso de tener cifras decimales, deben ser separadas con un punto (.) recuerda que solo son 2 cifras después del punto.');
             return ctx.scene.leave();
         }
+        try {
+            const newPagoMovil = new PagoMovil({
+                email: data.login.email,
+                course: data.login.userCourse.name,
+                modality: data.login.userCourse.modality,
+                module: data.login.userCourse.module,
+                payday: data.login.userCourse.payday,
+                module_price: data.login.userCourse.module_price,
+                amount: ctx.wizard.state.data.amount,
+                ref_number: ctx.wizard.state.data.ref,
+                verified: false,
+            });
+            await newPagoMovil.save();
+        } catch (error) {
+            await ctx.replyWithSticker('CAACAgIAAxkBAAEnZCplRZNZzhcmJvOk0fp6hjzTIgiNrgACfQAD9wLIDy7JuwrdyyJJMwQ');
+            await ctx.reply('Monto inválido, el formato debe ser solo números. En caso de tener cifras decimales, deben ser separadas con un punto (.) recuerda que solo son 2 cifras después del punto.');
+            return ctx.scene.leave();
+        }
         const newPagoMovil = new PagoMovil({
-            email: global.login.email,
-            course: global.login.userCourse.name,
-            modality: global.login.userCourse.modality,
-            module: global.login.userCourse.module,
-            payday: global.login.userCourse.payday,
-            module_price: global.login.userCourse.module_price,
+            email: data.login.email,
+            course: data.login.userCourse.name,
+            modality: data.login.userCourse.modality,
+            module: data.login.userCourse.module,
+            payday: data.login.userCourse.payday,
+            module_price: data.login.userCourse.module_price,
             amount: ctx.wizard.state.data.amount,
             ref_number: ctx.wizard.state.data.ref,
             verified: false,
@@ -374,10 +394,6 @@ Total a pagar: ${(amount * BCV).toFixed(2)} Bs.
 };
 bot.command('login', ctx => {
     ctx.scene.enter('my-login');
-    const global = {
-
-    };
-    console.log(global);
 });
 bot.action('hacerPago', (ctx) => {
     ctx.scene.enter('my-pago-movil');
@@ -386,9 +402,9 @@ bot.action('cerrar_sesion', async (ctx) => {
     ctx.scene.enter('my-logout');
 });
 bot.action('pagar_modulo', async (ctx) => {
-    if (global.login) {
-        pagoMovil(ctx, global.login.userCourse.name, global.login.userCourse.module_price, 'pagarModulo');
-    } else if (!global.login) {
+    if (data.login) {
+        pagoMovil(ctx, data.login.userCourse.name, data.login.userCourse.module_price, 'pagarModulo');
+    } else if (!data.login) {
         await ctx.reply('Su sesión está cerrada, ingrese usando /login');
     }
 });
