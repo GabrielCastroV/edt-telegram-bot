@@ -80,6 +80,8 @@ Total a pagar: ${(modulePrice[at].registration_price * BCV).toFixed(2)} Bs.
     }
 };
 
+const dataInfo = {};
+console.log(dataInfo);
 bot.on('pre_checkout_query', async (ctx) => {
     try {
         await ctx.answerPreCheckoutQuery(true);
@@ -96,8 +98,9 @@ bot.on('pre_checkout_query', async (ctx) => {
             phone: order_info.phone_number,
         };
 
-        // Guardo los datos del comprador en una variable global.
-        global.userData = userData;
+        // Guardo los datos del comprador en la variable dataInfo.
+        dataInfo.userData = userData;
+        console.log(dataInfo);
     } catch (error) {
         await ctx.answerPreCheckoutQuery(false, 'La compra no pudo ser procesada.');
         console.log(error);
@@ -106,15 +109,15 @@ bot.on('pre_checkout_query', async (ctx) => {
 
 bot.on('successful_payment', async (ctx) => {
     const newRegistration = new Registration({
-        order_id: global.userData.orderID,
-        username: global.userData.username,
-        first_name: global.userData.first_name,
-        currency: global.userData.currency,
-        total: (global.userData.total / 100),
-        course: global.userData.signature,
-        name: global.userData.name,
-        email: global.userData.email,
-        phone: global.userData.phone,
+        username: dataInfo.userData.username,
+        order_id: dataInfo.userData.orderID,
+        first_name: dataInfo.userData.first_name,
+        currency: dataInfo.userData.currency,
+        total: (dataInfo.userData.total / 100),
+        course: dataInfo.userData.signature,
+        name: dataInfo.userData.name,
+        email: dataInfo.userData.email,
+        phone: dataInfo.userData.phone,
         verified: true,
     });
     await newRegistration.save();

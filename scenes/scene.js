@@ -279,9 +279,9 @@ const pagoMovilModuleScene = new WizardScene(
     },
     async ctx => {
         // Guardo el número de referencia.
-        ctx.wizard.state.data.ref = ctx.message?.text;
-        const REFREGEX = /^\d{4}$/;
-        const refValidation = REFREGEX.test(ctx.wizard.state.data.ref);
+        ctx.wizard.state.data.ref = ctx?.message?.text;
+        const REF_REGEX = /^\d{4}$/;
+        const refValidation = REF_REGEX.test(ctx.wizard.state.data.ref);
         if (!refValidation) {
             await ctx.replyWithSticker('CAACAgIAAxkBAAEnZChlRZK4ZxZdQ4l6rCKuV-c2lcOmzAACLwADwZxgDK-MRHjuZdGKMwQ');
             await ctx.reply('Número de operación inválida, deben ser unicamente 4 dígitos. No uses hashtags (#), puntos (.) o comas (,)');
@@ -374,6 +374,10 @@ Total a pagar: ${(amount * BCV).toFixed(2)} Bs.
 };
 bot.command('login', ctx => {
     ctx.scene.enter('my-login');
+    const global = {
+
+    };
+    console.log(global);
 });
 bot.action('hacerPago', (ctx) => {
     ctx.scene.enter('my-pago-movil');
