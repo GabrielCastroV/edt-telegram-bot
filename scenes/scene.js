@@ -323,18 +323,6 @@ En caso de tener decimal, utilice un punto (.) para separar. Ejemplo: 2300.50`);
             await ctx.reply('Monto inválido, el formato debe ser solo números. En caso de tener cifras decimales, deben ser separadas con un punto (.) recuerda que solo son 2 cifras después del punto.');
             return ctx.scene.leave();
         }
-        const newPagoMovil = new PagoMovil({
-            email: data.login.email,
-            course: data.login.userCourse.name,
-            modality: data.login.userCourse.modality,
-            module: data.login.userCourse.module,
-            payday: data.login.userCourse.payday,
-            module_price: data.login.userCourse.module_price,
-            amount: ctx.wizard.state.data.amount,
-            ref_number: ctx.wizard.state.data.ref,
-            verified: false,
-        });
-        await newPagoMovil.save();
         await ctx.replyWithSticker('CAACAgIAAxkBAAEnZ3NlRmac0lOpSBGuVHXf9u3PgWS9hgACBAEAAvcCyA8gD3c76avISTME');
         await ctx.reply('Procesando el pago, nos comunicaremos con usted a la brevedad posible.');
         return ctx.scene.leave();
