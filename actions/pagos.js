@@ -117,7 +117,7 @@ bot.on('successful_payment', async (ctx) => {
         name: dataInfo.userData.name,
         email: dataInfo.userData.email,
         phone: dataInfo.userData.phone,
-        verified: true,
+        verified: false,
     });
     await newRegistration.save();
     await ctx.replyWithSticker('CAACAgIAAxkBAAEnZ7JlRnVEqWj7As0G2IF0WFywM3tTUgACTwEAAiI3jgR8lZdITHG8FzME');
