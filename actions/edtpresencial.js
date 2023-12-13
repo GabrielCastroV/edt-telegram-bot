@@ -147,7 +147,7 @@ const paymentMethod = async (ctx, inscribirse, pago_movil, volver) => {
             {
                 reply_markup: {
                     inline_keyboard: [
-                        [{ text: 'Tarjeta de Crédito 💳', callback_data: inscribirse }, { text: 'Pago Móvil / Transferencia🏦', callback_data: pago_movil }],
+                        [{ text: 'Tarjeta de Crédito 💳', callback_data: inscribirse }, { text: 'Pago Móvil 📱', callback_data: pago_movil }],
                         [{ text: '< Volver', callback_data: volver }],
                     ],
                 },

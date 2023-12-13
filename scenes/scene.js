@@ -154,7 +154,7 @@ const logout = new WizardScene(
     },
 );
 
-// Pago movil/Transferencia Wizard Scene
+// Pago movil Wizard Scene
 const pagoMovilScene = new WizardScene(
     'my-pago-movil',
     async ctx => {
