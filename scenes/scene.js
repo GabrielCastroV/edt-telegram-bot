@@ -12,6 +12,8 @@ const data = {};
 
 // Panel del login.
 const loginPanel = async ctx => {
+    const { module } = await User.findOne({ email: data.login.user.email });
+
     // Agrego sus modulos y notas a las variables correspondidas.
     for (let i = 0; i < data.login.userGrade.length; i++) {
         data.login.grades.push(`✯ Módulo ${data.login.userGrade[i].module}, calificación: ${data.login.userGrade[i].grade}/20`);
@@ -25,12 +27,12 @@ const loginPanel = async ctx => {
 🎓 Cursando: ${data.login.userCourse.name}
 🌐 Modalidad: ${data.login.userCourse.modality}
     
-📖 Módulo actual: ${data.login.user.module}/${data.login.userCourse.modules}
+📖 Módulo actual: ${module}/${data.login.userCourse.modules}
 📊 Asistencia: ${data.login.user.attendance}%
 
 ${data.login.grades.join(' \n')}
 
-🏆 Actual promedio de notas: ${(data.login.grade / data.login.user.module).toFixed(0)}
+🏆 Actual promedio de notas: ${(data.login.grade / module).toFixed(0)}
 📝 Nota final hasta ahora: ${(data.login.grade / data.login.userCourse.modules).toFixed(0)}
     
 🗓️ Próximo pago: ${data.login.user.payday.toLocaleDateString()}
@@ -356,11 +358,6 @@ const pagoMovil = async (ctx, signature, amount, callback) => {
 CI: V-12.345.678
 Banesco
 0412-123456789
-
-Transferencia:
-4242-4242-4242-4242
-Banesco
-Rif: 123456789
 
 ${signature} (Módulo)
 

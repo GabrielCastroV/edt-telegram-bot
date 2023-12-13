@@ -41,7 +41,7 @@ const signUp = async (ctx, signature, at, photo_url) => {
     }
 };
 
-// Debit / Pago Movil method.
+// Pago Movil method.
 
 const pagoMovil = async (ctx, signature, at, callback) => {
     try {
@@ -55,11 +55,6 @@ const pagoMovil = async (ctx, signature, at, callback) => {
 CI: V-12.345.678
 Banesco
 0412-123456789
-
-Transferencia:
-4242-4242-4242-4242
-Banesco
-Rif: 123456789
 
 ${signature} (Inscripción)
 

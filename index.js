@@ -33,13 +33,13 @@ bot.start(async (ctx) => {
     }
     const photoPath = 'img/pfp.png';
     const welcome = `
-¡Bienvenido al Asistente Virtual de EDTecnica!
+¡Bienvenido al Asistente Virtual de EDTécnica!
 
-Somos tu guía personal para explorar todos los servicios y cursos que ofrecemos. Ya sea que estés interesado en aprender programación, diseño digital, marketing, robótica, fotografía u otros campos emocionantes, estamos aquí para ayudarte en cada paso del camino.
+Somos tu guía personal para explorar todos los servicios y cursos que ofrecemos. Ya sea que estés interesado en aprender programación, diseño digital, marketing, robótica, fotografía u otros campos emocionantes.
 
-Nuestra misión es proporcionarte la mejor experiencia educativa, brindándote acceso a cursos de alta calidad, instructores expertos y una comunidad de aprendizaje apasionada.
+Nuestra misión es proporcionarte una alternativa de información y pagos de cursos mediante este bot de Telegram.
 
-Siempre puedes preguntarnos sobre nuestros cursos, fechas de inicio, ubicaciones y cualquier otra información que necesites. Estamos aquí para responder tus preguntas y brindarte la información que necesitas para comenzar tu viaje educativo con EDTecnica.
+Aquí encontrarás sobre nuestros cursos, fechas de inicio, ubicaciones y cualquier otra información que necesites. Estamos aquí para responder tus preguntas y brindarte la información que necesitas para comenzar tu viaje educativo con EDTécnica.
 
 ¡Disfruta explorando y aprendiendo con nosotros!
 
