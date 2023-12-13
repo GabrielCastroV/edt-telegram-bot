@@ -326,7 +326,7 @@ En caso de tener decimal, utilice un punto (.) para separar. Ejemplo: 2300.50`);
             return ctx.scene.leave();
         }
         await ctx.replyWithSticker('CAACAgIAAxkBAAEnZ3NlRmac0lOpSBGuVHXf9u3PgWS9hgACBAEAAvcCyA8gD3c76avISTME');
-        await ctx.reply('Procesando el pago, nos comunicaremos con usted a la brevedad posible.');
+        await ctx.reply('Procesando el pago, nos comunicaremos con usted mediante correo electrónico');
         return ctx.scene.leave();
     },
 );
