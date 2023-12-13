@@ -67,11 +67,11 @@ const paymentMethod = async (ctx, inscribirse, pago_movil, volver) => {
 const infoSchedules = `
 Horarios disponibles Online:
 
-1. Lunes y Martes, 9am a 12pm, inicia el 13/11/23
+1. Lunes y Martes, 9am a 12pm, inicia el 15/01/24
 
-2. Miercoles y Jueves, 1pm a 4pm, inicia el 15/11/23
+2. Miercoles y Jueves, 1pm a 4pm, inicia el 17/01/24
 
-3. Sabados, 9am-12pm, inicia el 25/11/23
+3. Sabados, 9am-12pm, inicia el 20/01/24
 `;
 const schedulesPlus = async (ctx, volver) => {
     try {
