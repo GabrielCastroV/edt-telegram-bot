@@ -12,7 +12,7 @@ const data = {};
 
 // Panel del login.
 const loginPanel = async ctx => {
-    const { module } = await User.findOne({ email: data.login.user.email });
+    const { module, payday } = await User.findOne({ email: data.login.user.email });
 
     // Agrego sus modulos y notas a las variables correspondidas.
     for (let i = 0; i < data.login.userGrade.length; i++) {
@@ -35,7 +35,7 @@ ${data.login.grades.join(' \n')}
 🏆 Actual promedio de notas: ${(data.login.grade / module).toFixed(0)}
 📝 Nota final hasta ahora: ${(data.login.grade / data.login.userCourse.modules).toFixed(0)}
     
-🗓️ Próximo pago: ${data.login.user.payday.toLocaleDateString()}
+🗓️ Próximo pago: ${payday.toLocaleDateString()}
 💲 Monto de mensualidad: ${data.login.userCourse.module_price}$
 `);
     await ctx.replyWithHTML(info,
@@ -94,7 +94,7 @@ const login = new WizardScene(
         if (!user) {
             // Si el correo no existe en la base de datos, le notifico y cierro escena.
             await ctx.replyWithSticker('CAACAgIAAxkBAAEnZBJlRY-oHk-8ktm0jVsC66GCva6s1wACuQ4AAmxu8Emp2F_Xn3emBjME');
-            await ctx.reply('Usted no es estudiante de EDT, le invitamos a registrarse como estudiante en www.virtualasistant.com/create');
+            await ctx.reply('Usted no es estudiante de EDT, le invitamos a registrarse como estudiante en www.virtualassistantbot.com/create');
             return ctx.scene.leave();
         }
         // Creamos un número aleatorio de 6 dígitos que será su clave temporal para iniciar sesión.
