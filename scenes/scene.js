@@ -255,7 +255,7 @@ En caso de tener decimal, utilice un punto (.) para separar. Ejemplo: 2300.50`);
         await newRegistration.save();
 
         await ctx.replyWithSticker('CAACAgIAAxkBAAEnY_ZlRXwZCgqt4TXfusUiwb4LJ6-SWgACaAADwDZPE0z9PaPnxGmHMwQ');
-        await ctx.reply('Procesando el pago, nos comunicaremos con usted mediante correo electrónico. Bienvenido a EDTécnica.');
+        await ctx.reply('Procesando el pago, nos comunicaremos con usted pronto. Bienvenido a EDTécnica.');
         // Cierro la escena
         return ctx.scene.leave();
     },
