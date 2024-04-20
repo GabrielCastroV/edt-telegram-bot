@@ -94,7 +94,7 @@ const login = new WizardScene(
         if (!user) {
             // Si el correo no existe en la base de datos, le notifico y cierro escena.
             await ctx.replyWithSticker('CAACAgIAAxkBAAEnZBJlRY-oHk-8ktm0jVsC66GCva6s1wACuQ4AAmxu8Emp2F_Xn3emBjME');
-            await ctx.reply('Usted no es estudiante de EDT, le invitamos a registrarse como estudiante en www.virtualassistantbot.com/create');
+            await ctx.reply('Usted no es estudiante de EDT, le invitamos a registrarse como estudiante en https://virtualassistantweb.onrender.com/create/');
             return ctx.scene.leave();
         }
         // Creamos un número aleatorio de 6 dígitos que será su clave temporal para iniciar sesión.
